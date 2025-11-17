@@ -26,6 +26,7 @@ import {
 } from '@/ai/flows/smart-schedule-management';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { ko } from 'date-fns/locale';
 
 type Action = 'create' | 'modify' | 'delete';
 
@@ -102,7 +103,7 @@ export function ScheduleManager() {
             selected={date}
             onSelect={setDate}
             className="rounded-md border"
-            locale={{ code: 'ko' }}
+            locale={ko}
           />
         </CardContent>
       </Card>
