@@ -9,12 +9,13 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {googleAI} from '@genkit-ai/google-genai';
 import {z} from 'genkit';
 
 const DailyBriefingInputSchema = z.object({
-  schedules: z.string().describe('A summary of the user\'s schedule for the day.'),
-  toDoLists: z.string().describe('A summary of the user\'s to-do lists for the day.'),
-  importantNotes: z.string().describe('A summary of the user\'s important notes for the day.'),
+  schedules: z.string().describe("A summary of the user's schedule for the day."),
+  toDoLists: z.string().describe("A summary of the user's to-do lists for the day."),
+  importantNotes: z.string().describe("A summary of the user's important notes for the day."),
 });
 export type DailyBriefingInput = z.infer<typeof DailyBriefingInputSchema>;
 
@@ -29,9 +30,10 @@ export async function generateDailyBriefing(input: DailyBriefingInput): Promise<
 
 const prompt = ai.definePrompt({
   name: 'dailyBriefingPrompt',
+  model: googleAI.model('gemini-1.5-flash'),
   input: {schema: DailyBriefingInputSchema},
   output: {schema: DailyBriefingOutputSchema},
-  prompt: `You are an AI assistant that provides a concise and helpful daily briefing to users.  The briefing summarizes the user\'s schedule, to-do list, and important notes for the day.
+  prompt: `You are an AI assistant that provides a concise and helpful daily briefing to users.  The briefing summarizes the user's schedule, to-do list, and important notes for the day.
 
   Schedule: {{{schedules}}}
 
