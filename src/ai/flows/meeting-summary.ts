@@ -9,14 +9,13 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import { googleAI } from '@genkit-ai/google-genai';
-import wav from 'wav';
+import {googleAI} from '@genkit-ai/google-genai';
 
 const MeetingSummaryInputSchema = z.object({
   audioDataUri: z
     .string()
     .describe(
-      'Meeting audio data as a data URI that must include a MIME type and use Base64 encoding. Expected format: \'data:<mimetype>;base64,<encoded_data>\'.' // Fixed typo here
+      'Meeting audio data as a data URI that must include a MIME type and use Base64 encoding. Expected format: \'data:<mimetype>;base64,<encoded_data>\'.'
     ),
 });
 export type MeetingSummaryInput = z.infer<typeof MeetingSummaryInputSchema>;
@@ -33,7 +32,7 @@ export async function meetingSummary(input: MeetingSummaryInput): Promise<Meetin
 
 const meetingSummaryPrompt = ai.definePrompt({
   name: 'meetingSummaryPrompt',
-  input: {schema: MeetingSummaryInputSchema},
+  input: {schema: z.object({ transcript: z.string() })},
   output: {schema: MeetingSummaryOutputSchema},
   prompt: `You are an AI assistant tasked with summarizing meetings and extracting action items.
 
@@ -42,7 +41,7 @@ const meetingSummaryPrompt = ai.definePrompt({
   Transcript: {{{transcript}}}
 
   Summary:
-  Action Items:`, // Added transcript to the prompt.
+  Action Items:`,
 });
 
 const meetingSummaryFlow = ai.defineFlow(
@@ -52,34 +51,19 @@ const meetingSummaryFlow = ai.defineFlow(
     outputSchema: MeetingSummaryOutputSchema,
   },
   async input => {
-    // Convert audio to text using a transcription service or model
-    const audioBuffer = Buffer.from(
-      input.audioDataUri.substring(input.audioDataUri.indexOf(',') + 1),
-      'base64'
-    );
-
-    const { media } = await ai.generate({
-      model: googleAI.model('gemini-2.5-flash-preview-tts'),
-      config: {
-        responseModalities: ['AUDIO'],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Algenib' },
+    
+    const {text: transcript} = await ai.generate({
+      model: googleAI.model('gemini-1.5-flash'),
+      prompt: [
+        {
+          media: {
+            url: input.audioDataUri,
           },
         },
-      },
-      prompt: "Please transcribe the following audio",
+      ],
     });
-
-    let transcript = "";
-    if (media?.url) {
-        transcript = media.url;
-    } else {
-        transcript = "Error: Could not process audio";
-    }
     
     const {output} = await meetingSummaryPrompt({
-      ...input,
       transcript,
     });
     return output!;
