@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { CornerDownLeft, Mic, MicOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import { Card } from '../ui/card';
 export function ChatInterface() {
   const [input, setInput] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const {
     isListening,
     transcript,
@@ -18,6 +19,10 @@ export function ChatInterface() {
     hasSpeechSupport,
   } = useSpeech();
   const { toast } = useToast();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     if (transcript) {
@@ -66,7 +71,7 @@ export function ChatInterface() {
           disabled={isProcessing}
         />
         <div className="absolute right-1 top-1/2 flex -translate-y-1/2 items-center">
-          {hasSpeechSupport && (
+          {isClient && hasSpeechSupport && (
             <Button
               type="button"
               size="icon"
