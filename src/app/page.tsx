@@ -47,16 +47,9 @@ export default function DashboardPage() {
         description="에이전트 코어에 오신 것을 환영합니다. 오늘의 개요입니다."
       />
       <main className="flex-1 space-y-6 p-4 sm:p-6">
-        {/* 상단 1: 커맨드창 */}
         <ChatInterface />
-
-        {/* 상단 2: 아이콘 메뉴 */}
         <IconNav activeView={activeView} setActiveView={setActiveView} />
-
-        {/* 상단 3 & 중간: 동적 콘텐츠 영역 */}
         <div className="space-y-6">{renderContent()}</div>
-
-        {/* 하단: 지능형 제안 */}
         <SuggestionCard />
       </main>
     </div>
