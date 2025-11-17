@@ -31,7 +31,7 @@ export async function searchAndQA(input: SearchAndQAInput): Promise<SearchAndQAO
 
 const prompt = ai.definePrompt({
   name: 'searchAndQAPrompt',
-  model: googleAI.model('gemini-1.5-flash'),
+  model: googleAI.model('gemini-pro'),
   input: {schema: SearchAndQAInputSchema},
   output: {schema: SearchAndQAOutputSchema},
   prompt: `You are a search and question answering expert.

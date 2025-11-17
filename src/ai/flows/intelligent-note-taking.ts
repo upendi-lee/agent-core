@@ -31,7 +31,7 @@ export async function intelligentNoteTaking(input: IntelligentNoteTakingInput): 
 
 const prompt = ai.definePrompt({
   name: 'intelligentNoteTakingPrompt',
-  model: googleAI.model('gemini-1.5-flash'),
+  model: googleAI.model('gemini-pro'),
   input: {schema: IntelligentNoteTakingInputSchema},
   output: {schema: IntelligentNoteTakingOutputSchema},
   prompt: `You are an intelligent note-taking assistant. You will receive note content and suggest relevant tags based on keyword extraction from the note.

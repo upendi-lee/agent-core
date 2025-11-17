@@ -55,7 +55,7 @@ export async function deleteSchedule(input: SmartScheduleInput): Promise<SmartSc
 
 const prompt = ai.definePrompt({
   name: 'smartScheduleManagementPrompt',
-  model: googleAI.model('gemini-1.5-flash'),
+  model: googleAI.model('gemini-pro'),
   input: {schema: SmartScheduleInputSchema},
   output: {schema: SmartScheduleOutputSchema},
   prompt: `You are a smart schedule management assistant.

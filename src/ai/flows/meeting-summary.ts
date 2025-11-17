@@ -32,6 +32,7 @@ export async function meetingSummary(input: MeetingSummaryInput): Promise<Meetin
 
 const meetingSummaryPrompt = ai.definePrompt({
   name: 'meetingSummaryPrompt',
+  model: googleAI.model('gemini-pro'),
   input: {schema: z.object({ transcript: z.string() })},
   output: {schema: MeetingSummaryOutputSchema},
   prompt: `You are an AI assistant tasked with summarizing meetings and extracting action items.
@@ -53,12 +54,15 @@ const meetingSummaryFlow = ai.defineFlow(
   async input => {
     
     const {text: transcript} = await ai.generate({
-      model: googleAI.model('gemini-1.5-flash'),
+      model: googleAI.model('gemini-pro'),
       prompt: [
         {
           media: {
             url: input.audioDataUri,
           },
+        },
+        {
+          text: 'Transcribe this audio. If the audio is in Korean, provide the transcription in Korean.',
         },
       ],
     });

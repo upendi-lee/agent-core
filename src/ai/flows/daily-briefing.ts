@@ -30,7 +30,7 @@ export async function generateDailyBriefing(input: DailyBriefingInput): Promise<
 
 const prompt = ai.definePrompt({
   name: 'dailyBriefingPrompt',
-  model: googleAI.model('gemini-1.5-flash'),
+  model: googleAI.model('gemini-pro'),
   input: {schema: DailyBriefingInputSchema},
   output: {schema: DailyBriefingOutputSchema},
   prompt: `You are an AI assistant that provides a concise and helpful daily briefing to users.  The briefing summarizes the user's schedule, to-do list, and important notes for the day.
