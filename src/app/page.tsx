@@ -11,18 +11,41 @@ import { NoteTaker } from '@/components/note-taker';
 import { MeetingSummarizer } from '@/components/meeting-summarizer';
 import { CalendarView } from '@/components/dashboard/calendar-view';
 import { ScheduleManager } from '@/components/schedule-manager';
+import { Card } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
-type View = 'SCHEDULE' | 'NOTES' | 'TASKS' | 'MEETINGS' | 'BRIEFING';
+export type View = 'SCHEDULE' | 'NOTES' | 'TASKS' | 'MEETINGS' | 'BRIEFING' | 'UNKNOWN';
+
+const viewTitles: Record<View, string> = {
+  SCHEDULE: '일정',
+  NOTES: '노트',
+  TASKS: '작업',
+  MEETINGS: '회의',
+  BRIEFING: '데일리 브리핑',
+  UNKNOWN: '알 수 없음',
+};
 
 export default function DashboardPage() {
-  const [activeView, setActiveView] = useState<View>('SCHEDULE');
+  const [activeView, setActiveView] = useState<View | null>(null);
 
-  const renderContent = () => {
-    switch (activeView) {
+  const handleIconClick = (view: View) => {
+    setActiveView(view);
+  };
+
+  const handleModalClose = () => {
+    setActiveView(null);
+  };
+
+  const renderContentForView = (view: View) => {
+    switch (view) {
       case 'SCHEDULE':
         return (
           <div className="space-y-6">
-            <UpcomingSchedule />
             <CalendarView />
             <ScheduleManager />
           </div>
@@ -36,7 +59,7 @@ export default function DashboardPage() {
       case 'BRIEFING':
         return <DailyBriefing />;
       default:
-        return <UpcomingSchedule />;
+        return null;
     }
   };
 
@@ -47,11 +70,24 @@ export default function DashboardPage() {
         description="에이전트 코어에 오신 것을 환영합니다. 오늘의 개요입니다."
       />
       <main className="flex-1 space-y-6 p-4 sm:p-6">
-        <ChatInterface />
-        <IconNav activeView={activeView} setActiveView={setActiveView} />
-        <div className="space-y-6">{renderContent()}</div>
+        <ChatInterface onCommandProcessed={setActiveView} />
+        <Card className="p-2">
+          <IconNav onIconClick={handleIconClick} />
+        </Card>
+        <UpcomingSchedule />
         <SuggestionCard />
       </main>
+
+      <Dialog open={activeView !== null && activeView !== 'UNKNOWN'} onOpenChange={handleModalClose}>
+        <DialogContent className="sm:max-w-[425px] h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>{activeView ? viewTitles[activeView] : ''}</DialogTitle>
+          </DialogHeader>
+          <div className="overflow-y-auto">
+            {activeView && renderContentForView(activeView)}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

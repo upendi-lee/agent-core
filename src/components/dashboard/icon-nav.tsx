@@ -8,13 +8,12 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Card } from '../ui/card';
 
 type View = 'SCHEDULE' | 'NOTES' | 'TASKS' | 'MEETINGS' | 'BRIEFING';
 
 interface IconNavProps {
-  activeView: View;
-  setActiveView: (view: View) => void;
+  onIconClick: (view: View) => void;
+  activeView?: View | null;
 }
 
 const navItems = [
@@ -45,25 +44,23 @@ const navItems = [
   },
 ] as const;
 
-export function IconNav({ activeView, setActiveView }: IconNavProps) {
+export function IconNav({ onIconClick, activeView }: IconNavProps) {
   return (
-    <Card>
-      <div className="flex justify-around p-2">
-        {navItems.map((item) => (
-          <Button
-            key={item.id}
-            variant="ghost"
-            className={cn(
-              'flex flex-col items-center h-auto gap-1',
-              activeView === item.id ? 'text-primary' : 'text-muted-foreground'
-            )}
-            onClick={() => setActiveView(item.id)}
-          >
-            <item.icon className="size-6" />
-            <span className="text-xs">{item.label}</span>
-          </Button>
-        ))}
-      </div>
-    </Card>
+    <div className="flex justify-around p-2">
+      {navItems.map((item) => (
+        <Button
+          key={item.id}
+          variant="ghost"
+          className={cn(
+            'flex flex-col items-center h-auto gap-1',
+            activeView === item.id ? 'text-primary' : 'text-muted-foreground'
+          )}
+          onClick={() => onIconClick(item.id)}
+        >
+          <item.icon className="size-6" />
+          <span className="text-xs">{item.label}</span>
+        </Button>
+      ))}
+    </div>
   );
 }
