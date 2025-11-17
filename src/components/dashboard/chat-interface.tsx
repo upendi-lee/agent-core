@@ -139,7 +139,7 @@ export function ChatInterface() {
         <CardTitle>커맨드 센터</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full" ref={scrollAreaRef}>
+        <ScrollArea className="h-full max-h-[300px]" ref={scrollAreaRef}>
           <div className="space-y-4 pr-4">
             {messages.map((message, index) => (
               <div

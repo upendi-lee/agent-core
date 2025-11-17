@@ -8,7 +8,6 @@ import {
   CardTitle,
   CardFooter,
 } from '@/components/ui/card';
-import { Calendar } from '@/components/ui/calendar';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,12 +25,10 @@ import {
 } from '@/ai/flows/smart-schedule-management';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { ko } from 'date-fns/locale';
 
 type Action = 'create' | 'modify' | 'delete';
 
 export function ScheduleManager() {
-  const [date, setDate] = useState<Date | undefined>(new Date());
   const [description, setDescription] = useState('');
   const [action, setAction] = useState<Action>('create');
   const [isLoading, setIsLoading] = useState(false);
@@ -91,23 +88,6 @@ export function ScheduleManager() {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-3">
-      <Card className="lg:col-span-2">
-        <CardHeader>
-          <CardTitle>캘린더</CardTitle>
-          <CardDescription>현재 일정 개요입니다.</CardDescription>
-        </CardHeader>
-        <CardContent className="flex justify-center">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            className="rounded-md border"
-            locale={ko}
-          />
-        </CardContent>
-      </Card>
-
       <Card>
         <CardHeader>
           <CardTitle>일정 관리</CardTitle>
@@ -155,6 +135,5 @@ export function ScheduleManager() {
           </Button>
         </CardFooter>
       </Card>
-    </div>
   );
 }
