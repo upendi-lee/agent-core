@@ -9,7 +9,6 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {googleAI} from '@genkit-ai/google-genai';
 import {z} from 'genkit';
 
 const IntelligentNoteTakingInputSchema = z.object({
@@ -31,7 +30,7 @@ export async function intelligentNoteTaking(input: IntelligentNoteTakingInput): 
 
 const prompt = ai.definePrompt({
   name: 'intelligentNoteTakingPrompt',
-  model: googleAI.model('gemini-pro'),
+  model: 'gemini-pro',
   input: {schema: IntelligentNoteTakingInputSchema},
   output: {schema: IntelligentNoteTakingOutputSchema},
   prompt: `You are an intelligent note-taking assistant. You will receive note content and suggest relevant tags based on keyword extraction from the note.

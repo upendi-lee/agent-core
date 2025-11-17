@@ -10,10 +10,9 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {googleAI} from '@genkit-ai/google-genai';
 
 const ClassifyCommandInputSchema = z.object({
-  command: z.string().describe('The user\'s natural language command.'),
+  command: z.string().describe("The user's natural language command."),
 });
 export type ClassifyCommandInput = z.infer<typeof ClassifyCommandInputSchema>;
 
@@ -34,7 +33,7 @@ export async function classifyCommand(
 
 const prompt = ai.definePrompt({
   name: 'classifyCommandPrompt',
-  model: googleAI.model('gemini-pro'),
+  model: 'gemini-pro',
   input: {schema: ClassifyCommandInputSchema},
   output: {schema: ClassifyCommandOutputSchema},
   prompt: `You are a command classification expert. Your task is to classify the user's command into one of the following categories: SCHEDULE, NOTES, TASKS, MEETINGS, BRIEFING.

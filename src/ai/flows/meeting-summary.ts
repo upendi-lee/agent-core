@@ -9,13 +9,12 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
-import {googleAI} from '@genkit-ai/google-genai';
 
 const MeetingSummaryInputSchema = z.object({
   audioDataUri: z
     .string()
     .describe(
-      'Meeting audio data as a data URI that must include a MIME type and use Base64 encoding. Expected format: \'data:<mimetype>;base64,<encoded_data>\'.'
+      "Meeting audio data as a data URI that must include a MIME type and use Base64 encoding. Expected format: 'data:<mimetype>;base64,<encoded_data>'."
     ),
 });
 export type MeetingSummaryInput = z.infer<typeof MeetingSummaryInputSchema>;
@@ -32,7 +31,7 @@ export async function meetingSummary(input: MeetingSummaryInput): Promise<Meetin
 
 const meetingSummaryPrompt = ai.definePrompt({
   name: 'meetingSummaryPrompt',
-  model: googleAI.model('gemini-pro'),
+  model: 'gemini-pro',
   input: {schema: z.object({ transcript: z.string() })},
   output: {schema: MeetingSummaryOutputSchema},
   prompt: `You are an AI assistant tasked with summarizing meetings and extracting action items.
@@ -54,7 +53,7 @@ const meetingSummaryFlow = ai.defineFlow(
   async input => {
     
     const {text: transcript} = await ai.generate({
-      model: googleAI.model('gemini-pro'),
+      model: 'gemini-pro',
       prompt: [
         {
           media: {
