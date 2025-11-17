@@ -33,7 +33,7 @@ export type SmartScheduleInput = z.infer<typeof SmartScheduleInputSchema>;
 const SmartScheduleOutputSchema = z.object({
   success: z.boolean().describe('Whether the schedule action was successful.'),
   message: z.string().describe('A message indicating the result of the action.'),
-  scheduleDetails: z.record(z.any()).optional().describe('Details of the schedule, if available.'),
+  scheduleDetails: z.any().optional().describe('Details of the schedule, if available.'),
 });
 export type SmartScheduleOutput = z.infer<typeof SmartScheduleOutputSchema>;
 
