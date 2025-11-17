@@ -8,8 +8,8 @@ export default function DashboardPage() {
   return (
     <div className="flex h-full flex-col">
       <PageHeader
-        title="Dashboard"
-        description="Welcome to Agent Core. Here's your daily overview."
+        title="대시보드"
+        description="에이전트 코어에 오신 것을 환영합니다. 오늘의 개요입니다."
       />
       <main className="grid flex-1 gap-6 p-4 sm:p-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <div className="md:col-span-2 lg:col-span-2 xl:col-span-3">

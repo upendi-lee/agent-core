@@ -84,14 +84,14 @@ export function ChatInterface() {
     try {
       let assistantResponse: Message = {
         role: 'assistant',
-        content: 'Sorry, I am not sure how to handle that.',
+        content: '죄송합니다, 어떻게 처리해야 할지 잘 모르겠습니다.',
       };
 
       if (intent === 'note') {
         const result = await intelligentNoteTaking({ noteContent: input });
         assistantResponse.content = (
           <div>
-            <p>Note saved! I've suggested some tags for you:</p>
+            <p>노트가 저장되었습니다! 다음과 같은 태그를 제안합니다:</p>
             <div className="mt-2 flex flex-wrap gap-2">
               {result.suggestedTags.map((tag) => (
                 <span
@@ -111,21 +111,21 @@ export function ChatInterface() {
         });
         assistantResponse.content = result.message;
       } else {
-        assistantResponse.content = `I understood your message: "${input}". General conversation is not yet implemented.`;
+        assistantResponse.content = `메시지를 이해했습니다: "${input}". 일반 대화는 아직 구현되지 않았습니다.`;
       }
       setMessages((prev) => [...prev, assistantResponse]);
     } catch (error) {
-      console.error('AI processing error:', error);
+      console.error('AI 처리 오류:', error);
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'Something went wrong while processing your request.',
+        title: '오류',
+        description: '요청을 처리하는 중에 문제가 발생했습니다.',
       });
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          content: 'Sorry, an error occurred. Please try again.',
+          content: '죄송합니다, 오류가 발생했습니다. 다시 시도해 주세요.',
         },
       ]);
     } finally {
@@ -136,7 +136,7 @@ export function ChatInterface() {
   return (
     <Card className="flex h-full flex-col">
       <CardHeader>
-        <CardTitle>Command Center</CardTitle>
+        <CardTitle>커맨드 센터</CardTitle>
       </CardHeader>
       <CardContent className="flex-1 overflow-hidden">
         <ScrollArea className="h-full" ref={scrollAreaRef}>
@@ -207,18 +207,18 @@ export function ChatInterface() {
             defaultValue="general"
           >
             <SelectTrigger className="w-[140px]">
-              <SelectValue placeholder="Select intent" />
+              <SelectValue placeholder="의도 선택" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="general">General</SelectItem>
-              <SelectItem value="note">Create Note</SelectItem>
-              <SelectItem value="schedule">Schedule</SelectItem>
+              <SelectItem value="general">일반</SelectItem>
+              <SelectItem value="note">노트 생성</SelectItem>
+              <SelectItem value="schedule">일정</SelectItem>
             </SelectContent>
           </Select>
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a command or use the microphone..."
+            placeholder="명령을 입력하거나 마이크를 사용하세요..."
             className="flex-1 pr-20"
             disabled={isProcessing}
           />

@@ -9,18 +9,18 @@ import { cn } from '@/lib/utils';
 import { Calendar } from 'lucide-react';
 
 const mockEvents = [
-  { time: '09:00 AM', title: 'Team Stand-up' },
-  { time: '11:30 AM', title: 'Design Review' },
-  { time: '02:00 PM', title: 'Client Call - Project Phoenix' },
-  { time: '04:30 PM', title: '1-on-1 with Sarah' },
+  { time: '오전 09:00', title: '팀 스탠드업' },
+  { time: '오전 11:30', title: '디자인 검토' },
+  { time: '오후 02:00', title: '고객 전화 - 프로젝트 피닉스' },
+  { time: '오후 04:30', title: '사라와 1대1 면담' },
 ];
 
 export function UpcomingSchedule() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Upcoming Today</CardTitle>
-        <CardDescription>A quick look at your schedule.</CardDescription>
+        <CardTitle>오늘의 예정된 일정</CardTitle>
+        <CardDescription>당신의 일정을 빠르게 확인하세요.</CardDescription>
       </CardHeader>
       <CardContent>
         {mockEvents.length > 0 ? (
@@ -39,7 +39,7 @@ export function UpcomingSchedule() {
         ) : (
           <div className="flex flex-col items-center justify-center gap-2 text-center text-muted-foreground">
             <Calendar className="size-8" />
-            <p className="text-sm">No events scheduled for today.</p>
+            <p className="text-sm">오늘 예정된 이벤트가 없습니다.</p>
           </div>
         )}
       </CardContent>

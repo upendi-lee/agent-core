@@ -27,27 +27,27 @@ import { cn } from '@/lib/utils';
 const menuItems = [
   {
     href: '/',
-    label: 'Dashboard',
+    label: '대시보드',
     icon: Home,
   },
   {
     href: '/schedule',
-    label: 'Schedule',
+    label: '일정',
     icon: Calendar,
   },
   {
     href: '/notes',
-    label: 'Notes',
+    label: '노트',
     icon: Notebook,
   },
   {
     href: '/tasks',
-    label: 'Tasks',
+    label: '작업',
     icon: ListTodo,
   },
   {
     href: '/meetings',
-    label: 'Meetings',
+    label: '회의',
     icon: MicVocal,
   },
 ];
@@ -63,7 +63,7 @@ export function MainSidebar() {
     >
       <SidebarHeader className="flex items-center gap-2">
         <AgentCoreIcon className="size-8 shrink-0" />
-        <span className="text-lg font-semibold text-primary">Agent Core</span>
+        <span className="text-lg font-semibold text-primary">에이전트 코어</span>
       </SidebarHeader>
       <SidebarContent className="p-2">
         <SidebarMenu>
@@ -92,7 +92,7 @@ export function MainSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton>
               <Settings />
-              <span>Settings</span>
+              <span>설정</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

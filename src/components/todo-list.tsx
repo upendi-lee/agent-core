@@ -52,9 +52,9 @@ export function TodoList() {
   return (
     <Card className="mx-auto max-w-2xl">
       <CardHeader>
-        <CardTitle>My Tasks</CardTitle>
+        <CardTitle>내 작업</CardTitle>
         <CardDescription>
-          Add, manage, and complete your tasks for the day.
+          하루의 작업을 추가, 관리 및 완료하세요.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -62,14 +62,14 @@ export function TodoList() {
           <Input
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
-            placeholder="e.g., Follow up on sales leads"
+            placeholder="예: 영업 리드 후속 조치"
           />
           <Button type="submit">
-            <Plus className="mr-2 h-4 w-4" /> Add Task
+            <Plus className="mr-2 h-4 w-4" /> 작업 추가
           </Button>
         </form>
         <div className="mt-6 space-y-4">
-          <h3 className="text-lg font-semibold">To-Do</h3>
+          <h3 className="text-lg font-semibold">할 일</h3>
           <div className="space-y-2">
             {incompleteTasks.length > 0 ? (
               incompleteTasks.map((task) => (
@@ -106,14 +106,14 @@ export function TodoList() {
               ))
             ) : (
               <p className="p-2 text-sm text-muted-foreground">
-                All tasks completed!
+                모든 작업을 완료했습니다!
               </p>
             )}
           </div>
           {completedTasks.length > 0 && (
             <>
               <Separator className="my-4" />
-              <h3 className="text-lg font-semibold">Completed</h3>
+              <h3 className="text-lg font-semibold">완료됨</h3>
               <div className="space-y-2">
                 {completedTasks.map((task) => (
                   <div

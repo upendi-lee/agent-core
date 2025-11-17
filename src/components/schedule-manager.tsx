@@ -41,8 +41,8 @@ export function ScheduleManager() {
     if (!description.trim()) {
       toast({
         variant: 'destructive',
-        title: 'Input required',
-        description: 'Please provide a description for the schedule action.',
+        title: '입력 필요',
+        description: '일정 작업에 대한 설명을 제공해 주세요.',
       });
       return;
     }
@@ -59,31 +59,42 @@ export function ScheduleManager() {
       const response = await actionMap[action]({ action, description });
       setResult(response.message);
       toast({
-        title: response.success ? 'Success' : 'Error',
+        title: response.success ? '성공' : '오류',
         description: response.message,
         variant: response.success ? 'default' : 'destructive',
       });
     } catch (error) {
-      console.error('Schedule management error:', error);
+      console.error('일정 관리 오류:', error);
       const errorMessage =
-        'An error occurred while managing your schedule. Please try again.';
+        '일정을 관리하는 중에 오류가 발생했습니다. 다시 시도해 주세요.';
       setResult(errorMessage);
       toast({
         variant: 'destructive',
-        title: 'Operation Failed',
+        title: '작업 실패',
         description: errorMessage,
       });
     } finally {
       setIsLoading(false);
     }
   };
+  
+  const actionToKorean = (action: Action) => {
+    switch (action) {
+      case 'create':
+        return '이벤트 생성';
+      case 'modify':
+        return '이벤트 수정';
+      case 'delete':
+        return '이벤트 삭제';
+    }
+  }
 
   return (
     <div className="grid gap-6 lg:grid-cols-3">
       <Card className="lg:col-span-2">
         <CardHeader>
-          <CardTitle>Calendar</CardTitle>
-          <CardDescription>Your current schedule overview.</CardDescription>
+          <CardTitle>캘린더</CardTitle>
+          <CardDescription>현재 일정 개요입니다.</CardDescription>
         </CardHeader>
         <CardContent className="flex justify-center">
           <Calendar
@@ -91,41 +102,42 @@ export function ScheduleManager() {
             selected={date}
             onSelect={setDate}
             className="rounded-md border"
+            locale={{ code: 'ko' }}
           />
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Manage Schedule</CardTitle>
+          <CardTitle>일정 관리</CardTitle>
           <CardDescription>
-            Use natural language to manage your events.
+            자연어를 사용하여 이벤트를 관리하세요.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="action">Action</Label>
+            <Label htmlFor="action">작업</Label>
             <Select
               onValueChange={(value: Action) => setAction(value)}
               defaultValue="create"
             >
               <SelectTrigger id="action">
-                <SelectValue placeholder="Select an action" />
+                <SelectValue placeholder="작업 선택" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="create">Create Event</SelectItem>
-                <SelectItem value="modify">Modify Event</SelectItem>
-                <SelectItem value="delete">Delete Event</SelectItem>
+                <SelectItem value="create">이벤트 생성</SelectItem>
+                <SelectItem value="modify">이벤트 수정</SelectItem>
+                <SelectItem value="delete">이벤트 삭제</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">설명</Label>
             <Textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder='e.g., "Schedule a meeting with the marketing team tomorrow at 3pm to discuss Q3 strategy."'
+              placeholder='예: "내일 오후 3시에 마케팅 팀과 3분기 전략 논의를 위한 회의 예약"'
               rows={5}
             />
           </div>
@@ -138,7 +150,7 @@ export function ScheduleManager() {
         <CardFooter>
           <Button onClick={handleSubmit} disabled={isLoading} className="w-full">
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {action.charAt(0).toUpperCase() + action.slice(1)} Event
+            {actionToKorean(action)}
           </Button>
         </CardFooter>
       </Card>

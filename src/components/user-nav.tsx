@@ -22,7 +22,7 @@ export function UserNav() {
           <Avatar className="h-9 w-9">
             <AvatarImage
               src={userAvatar?.imageUrl}
-              alt="User avatar"
+              alt="사용자 아바타"
               data-ai-hint={userAvatar?.imageHint}
             />
             <AvatarFallback>AC</AvatarFallback>
@@ -32,7 +32,7 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Agent Core User</p>
+            <p className="text-sm font-medium leading-none">에이전트 코어 사용자</p>
             <p className="text-xs leading-none text-muted-foreground">
               user@agentcore.ai
             </p>
@@ -41,21 +41,21 @@ export function UserNav() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            Profile
+            프로필
             <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            Billing
+            결제
             <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            Settings
+            설정
             <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          Log out
+          로그아웃
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
       </DropdownMenuContent>

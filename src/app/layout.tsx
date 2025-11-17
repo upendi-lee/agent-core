@@ -5,8 +5,8 @@ import { MainLayout } from '@/components/main-layout';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'Agent Core',
-  description: 'Your personal AI assistant to manage your life.',
+  title: '에이전트 코어',
+  description: '당신의 삶을 관리하는 개인 AI 비서.',
 };
 
 export default function RootLayout({
@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

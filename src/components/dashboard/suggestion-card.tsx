@@ -10,11 +10,11 @@ import { Lightbulb, AlertTriangle } from 'lucide-react';
 const mockSuggestions = [
   {
     type: 'alert',
-    text: 'Schedule conflict: "Client Call" and "Design Review" overlap by 30 mins.',
+    text: '일정 충돌: "고객 전화"와 "디자인 검토"가 30분 겹칩니다.',
   },
   {
     type: 'suggestion',
-    text: 'Based on your note "buy flight tickets", create a task for it?',
+    text: '"항공권 구매" 메모를 기반으로 작업을 생성하시겠습니까?',
   },
 ];
 
@@ -22,8 +22,8 @@ export function SuggestionCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Intelligent Suggestions</CardTitle>
-        <CardDescription>Proactive alerts and tips.</CardDescription>
+        <CardTitle>지능형 제안</CardTitle>
+        <CardDescription>사전 알림 및 팁.</CardDescription>
       </CardHeader>
       <CardContent>
         <ul className="space-y-4">

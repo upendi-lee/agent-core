@@ -48,13 +48,13 @@ export function MeetingSummarizer() {
         };
         mediaRecorderRef.current.start();
         setIsRecording(true);
-        toast({ title: 'Recording started' });
+        toast({ title: '녹음이 시작되었습니다' });
       } catch (err) {
-        console.error('Error accessing microphone:', err);
+        console.error('마이크 접근 오류:', err);
         toast({
           variant: 'destructive',
-          title: 'Microphone Error',
-          description: 'Could not access the microphone.',
+          title: '마이크 오류',
+          description: '마이크에 접근할 수 없습니다.',
         });
       }
     }
@@ -64,7 +64,7 @@ export function MeetingSummarizer() {
     if (mediaRecorderRef.current) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
-      toast({ title: 'Recording stopped' });
+      toast({ title: '녹음이 중지되었습니다' });
     }
   };
 
@@ -72,8 +72,8 @@ export function MeetingSummarizer() {
     if (!audioBlob) {
       toast({
         variant: 'destructive',
-        title: 'No Audio',
-        description: 'Please record some audio first.',
+        title: '오디오 없음',
+        description: '먼저 오디오를 녹음해 주세요.',
       });
       return;
     }
@@ -90,11 +90,11 @@ export function MeetingSummarizer() {
         });
         setResult(summaryResult);
       } catch (error) {
-        console.error('Summarization error:', error);
+        console.error('요약 오류:', error);
         toast({
           variant: 'destructive',
-          title: 'Summarization Failed',
-          description: 'An error occurred. Please try again.',
+          title: '요약 실패',
+          description: '오류가 발생했습니다. 다시 시도해 주세요.',
         });
       } finally {
         setIsLoading(false);
@@ -106,9 +106,9 @@ export function MeetingSummarizer() {
     <div className="grid gap-6 md:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle>Record Meeting</CardTitle>
+          <CardTitle>회의 녹음</CardTitle>
           <CardDescription>
-            Click start to record your meeting audio.
+            시작을 클릭하여 회의 오디오를 녹음하세요.
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center gap-4 p-10">
@@ -126,13 +126,13 @@ export function MeetingSummarizer() {
           </Button>
           <p className="text-sm text-muted-foreground">
             {isRecording
-              ? 'Recording in progress...'
-              : 'Click to start recording'}
+              ? '녹음 진행 중...'
+              : '클릭하여 녹음 시작'}
           </p>
           {audioBlob && (
             <div className="mt-4 flex flex-col items-center gap-2">
               <CheckCircle className="h-8 w-8 text-green-500" />
-              <p className="text-sm">Audio captured!</p>
+              <p className="text-sm">오디오 캡처 완료!</p>
               <audio controls src={URL.createObjectURL(audioBlob)} className="w-full max-w-sm" />
             </div>
           )}
@@ -144,15 +144,15 @@ export function MeetingSummarizer() {
             className="w-full"
           >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Summarize Audio
+            오디오 요약
           </Button>
         </CardFooter>
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Summary & Action Items</CardTitle>
+          <CardTitle>요약 및 실행 항목</CardTitle>
           <CardDescription>
-            Generated summary will appear here.
+            생성된 요약이 여기에 표시됩니다.
           </CardDescription>
         </CardHeader>
         <CardContent className="min-h-[300px]">
@@ -164,13 +164,13 @@ export function MeetingSummarizer() {
           {result && (
             <div className="space-y-4">
               <div>
-                <h3 className="font-semibold">Summary</h3>
+                <h3 className="font-semibold">요약</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {result.summary}
                 </p>
               </div>
               <div>
-                <h3 className="font-semibold">Action Items</h3>
+                <h3 className="font-semibold">실행 항목</h3>
                 <ul className="mt-2 space-y-2">
                   {result.actionItems.map((item, index) => (
                     <li key={index} className="flex items-start gap-2">
@@ -186,7 +186,7 @@ export function MeetingSummarizer() {
           )}
           {!isLoading && !result && (
             <div className="flex h-full items-center justify-center text-center text-muted-foreground">
-              <p>Record and summarize your meeting to see the results.</p>
+              <p>회의를 녹음하고 요약하여 결과를 확인하세요.</p>
             </div>
           )}
         </CardContent>

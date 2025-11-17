@@ -23,19 +23,19 @@ export function DailyBriefing() {
     setBriefing(null);
     try {
       const result = await generateDailyBriefing({
-        schedules: '9 AM stand-up, 1 PM project sync, 4 PM 1-on-1 with manager.',
+        schedules: '오전 9시 스탠드업, 오후 1시 프로젝트 동기화, 오후 4시 관리자와 1:1 미팅.',
         toDoLists:
-          'Finish Q2 report, Prepare slides for project sync, Book flight for conference.',
+          '2분기 보고서 완료, 프로젝트 동기화 슬라이드 준비, 컨퍼런스 항공편 예약.',
         importantNotes:
-          'Remember to follow up with the design team about the new mockups.',
+          '새로운 목업에 대해 디자인 팀에 후속 조치하는 것을 잊지 마세요.',
       });
       setBriefing(result.briefing);
     } catch (error) {
-      console.error('Error generating daily briefing:', error);
+      console.error('데일리 브리핑 생성 오류:', error);
       toast({
         variant: 'destructive',
-        title: 'Briefing Failed',
-        description: 'Could not generate your daily briefing. Please try again.',
+        title: '브리핑 실패',
+        description: '데일리 브리핑을 생성할 수 없습니다. 다시 시도해 주세요.',
       });
     } finally {
       setIsLoading(false);
@@ -45,8 +45,8 @@ export function DailyBriefing() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Daily Briefing</CardTitle>
-        <CardDescription>Your summary for today.</CardDescription>
+        <CardTitle>데일리 브리핑</CardTitle>
+        <CardDescription>오늘의 요약입니다.</CardDescription>
       </CardHeader>
       <CardContent>
         {isLoading && (
@@ -62,10 +62,10 @@ export function DailyBriefing() {
         {!briefing && !isLoading && (
           <div className="flex min-h-[100px] flex-col items-center justify-center gap-4 text-center">
             <p className="text-sm text-muted-foreground">
-              Get a summary of your day, including schedule, tasks, and notes.
+              일정, 작업, 노트를 포함한 하루 요약을 받아보세요.
             </p>
             <Button onClick={handleGenerateBriefing} disabled={isLoading}>
-              Generate Briefing
+              브리핑 생성
             </Button>
           </div>
         )}
