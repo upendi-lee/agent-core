@@ -63,7 +63,10 @@ export function MainSidebar() {
     >
       <SidebarHeader className="flex items-center gap-2">
         <AgentCoreIcon className="size-8 shrink-0" />
-        <span className="text-lg font-semibold text-primary">에이전트 코어</span>
+        <div className="flex flex-col">
+          <span className="text-sm font-semibold text-primary">에이전트</span>
+          <span className="text-sm font-semibold text-primary">코어</span>
+        </div>
       </SidebarHeader>
       <SidebarContent className="p-2">
         <SidebarMenu>
