@@ -62,7 +62,7 @@ export function TodoList() {
           <Input
             value={newTask}
             onChange={(e) => setNewTask(e.target.value)}
-            placeholder="예: 영업 리드 후속 조치"
+            placeholder="예: 영업 잠재고객 후속 조치"
           />
           <Button type="submit">
             <Plus className="mr-2 h-4 w-4" /> 작업 추가

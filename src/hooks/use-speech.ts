@@ -13,7 +13,7 @@ export function useSpeech() {
 
   useEffect(() => {
     if (!hasSpeechRecognition()) {
-      console.warn('Speech recognition is not supported in this browser.');
+      console.warn('이 브라우저에서는 음성 인식을 지원하지 않습니다.');
       return;
     }
 
@@ -24,7 +24,7 @@ export function useSpeech() {
 
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = 'en-US';
+    recognition.lang = 'ko-KR';
 
     recognition.onresult = (event) => {
       let finalTranscript = '';
@@ -44,7 +44,7 @@ export function useSpeech() {
     };
 
     recognition.onerror = (event) => {
-      console.error('Speech recognition error', event.error);
+      console.error('음성 인식 오류', event.error);
       setIsListening(false);
     };
 
@@ -76,7 +76,7 @@ export function useSpeech() {
       };
       speechSynthesis.speak(utterance);
     } else {
-      console.warn('Speech synthesis is not supported in this browser.');
+      console.warn('이 브라우저에서는 음성 합성을 지원하지 않습니다.');
     }
   }, []);
 

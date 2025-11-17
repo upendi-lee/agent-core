@@ -8,35 +8,35 @@ export interface Task {
 export const mockTasks: Task[] = [
   {
     id: '1',
-    text: '3분기 재무 보고서 최종 마무리',
+    text: '3분기 재무 보고서 마무리하기',
     completed: false,
     dueDate: '내일',
   },
   {
     id: '2',
-    text: '주간 동기화를 위한 프레젠테이션 준비',
+    text: '주간 동기화 회의 발표 자료 준비',
     completed: false,
     dueDate: '2일 후',
   },
   {
     id: '3',
-    text: '프론트엔드 팀의 풀 리퀘스트 검토',
+    text: '프론트엔드 팀의 코드 리뷰하기',
     completed: true,
   },
   {
     id: '4',
-    text: '덴버 컨퍼런스를 위한 호텔 및 항공편 예약',
+    text: '부산 출장 호텔 및 KTX 예약하기',
     completed: false,
   },
   {
     id: '5',
-    text: '새로운 공급업체 계약에 대해 법무팀과 후속 조치',
+    text: '새로운 협력업체 계약 건에 대해 법무팀과 확인하기',
     completed: false,
     dueDate: '금요일',
   },
   {
     id: '6',
-    text: '새로운 마케팅 인턴 온보딩',
+    text: '새로운 마케팅 인턴 온보딩 진행',
     completed: true,
   },
 ];

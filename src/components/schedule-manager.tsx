@@ -137,7 +137,7 @@ export function ScheduleManager() {
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder='예: "내일 오후 3시에 마케팅 팀과 3분기 전략 논의를 위한 회의 예약"'
+              placeholder='예: "내일 오후 3시에 마케팅 팀과 3분기 전략 회의 예약"'
               rows={5}
             />
           </div>
