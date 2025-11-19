@@ -51,9 +51,7 @@ const intelligentNoteTakingFlow = ai.defineFlow(
     outputSchema: IntelligentNoteTakingOutputSchema,
   },
   async input => {
-    const {output} = await prompt({
-      ...input,
-    });
+    const {output} = await prompt(input);
     return output!;
   }
 );
