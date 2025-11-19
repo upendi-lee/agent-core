@@ -25,6 +25,7 @@ import {
 } from '@/ai/flows/smart-schedule-management';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { CalendarView } from './dashboard/calendar-view';
 
 type Action = 'create' | 'modify' | 'delete';
 
@@ -88,9 +89,10 @@ export function ScheduleManager() {
   }
 
   return (
+    <div className="grid md:grid-cols-2 gap-6">
       <Card>
         <CardHeader>
-          <CardTitle>일정 관리</CardTitle>
+          <CardTitle>이벤트 관리</CardTitle>
           <CardDescription>
             자연어를 사용하여 이벤트를 관리하세요.
           </CardDescription>
@@ -135,5 +137,7 @@ export function ScheduleManager() {
           </Button>
         </CardFooter>
       </Card>
+      <CalendarView />
+    </div>
   );
 }
