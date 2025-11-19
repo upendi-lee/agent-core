@@ -8,137 +8,98 @@ import {
   CardTitle,
   CardFooter,
 } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import {
-  createSchedule,
-  modifySchedule,
-  deleteSchedule,
-} from '@/ai/flows/smart-schedule-management';
+  Clock,
+  Users,
+  Video,
+  MapPin,
+  AlignLeft,
+  Calendar as CalendarIcon,
+  ListTodo,
+} from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2 } from 'lucide-react';
 import { CalendarView } from './dashboard/calendar-view';
 
-type Action = 'create' | 'modify' | 'delete';
-
 export function ScheduleManager() {
-  const [description, setDescription] = useState('');
-  const [action, setAction] = useState<Action>('create');
-  const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handleSubmit = async () => {
-    if (!description.trim()) {
-      toast({
-        variant: 'destructive',
-        title: '입력 필요',
-        description: '일정 작업에 대한 설명을 제공해 주세요.',
-      });
-      return;
-    }
-    setIsLoading(true);
-    setResult(null);
-
-    const actionMap = {
-      create: createSchedule,
-      modify: modifySchedule,
-      delete: deleteSchedule,
-    };
-
-    try {
-      // AI is disabled, so we show a message instead of calling the flow.
-      const response = {
-        success: false,
-        message: 'AI 기능이 일시적으로 비활성화되었습니다. 현재 자연어 처리를 통한 일정 관리가 불가능합니다.',
-      }
-      setResult(response.message);
-      toast({
-        title: '기능 비활성화됨',
-        description: response.message,
-        variant: 'destructive',
-      });
-    } catch (error) {
-      console.error('일정 관리 오류:', error);
-      const errorMessage =
-        '일정을 관리하는 중에 오류가 발생했습니다. 다시 시도해 주세요.';
-      setResult(errorMessage);
-      toast({
-        variant: 'destructive',
-        title: '작업 실패',
-        description: errorMessage,
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSave = () => {
+    toast({
+      variant: 'destructive',
+      title: '기능 비활성화됨',
+      description: '현재 Google 캘린더 연동이 완료되지 않아 저장할 수 없습니다.',
+    });
   };
-  
-  const actionToKorean = (action: Action) => {
-    switch (action) {
-      case 'create':
-        return '이벤트 생성';
-      case 'modify':
-        return '이벤트 수정';
-      case 'delete':
-        return '이벤트 삭제';
-    }
-  }
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
       <Card>
-        <CardHeader>
+        <CardHeader className="p-4">
           <CardTitle>이벤트 관리</CardTitle>
           <CardDescription>
-            자연어를 사용하여 이벤트를 관리하세요. (현재 AI 기능 비활성화됨)
+            Google 캘린더와 연동하여 일정을 관리하세요.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="action">작업</Label>
-            <Select
-              onValueChange={(value: Action) => setAction(value)}
-              defaultValue="create"
-            >
-              <SelectTrigger id="action">
-                <SelectValue placeholder="작업 선택" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="create">이벤트 생성</SelectItem>
-                <SelectItem value="modify">이벤트 수정</SelectItem>
-                <SelectItem value="delete">이벤트 삭제</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="description">설명</Label>
-            <Textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder='예: "내일 오후 3시에 마케팅 팀과 3분기 전략 회의 예약"'
-              rows={5}
-            />
-          </div>
-          {result && (
-            <div className="rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground">
-              {result}
-            </div>
-          )}
+        <CardContent className="p-4 pt-0">
+          <Tabs defaultValue="event">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="event">일정</TabsTrigger>
+              <TabsTrigger value="task">할 일</TabsTrigger>
+              <TabsTrigger value="appointment">약속 일정</TabsTrigger>
+            </TabsList>
+            <TabsContent value="event" className="mt-4 space-y-4">
+              <Input placeholder="제목 추가" className="text-lg h-12" />
+              <div className="space-y-3">
+                <div className="flex items-center gap-4">
+                  <Clock className="h-5 w-5 text-muted-foreground" />
+                  <div className="text-sm">11월 19일 (수요일) ⋅ 오후 4:00 - 오후 5:00</div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Users className="h-5 w-5 text-muted-foreground" />
+                  <Input placeholder="참석자 추가" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"/>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Video className="h-5 w-5 text-muted-foreground" />
+                  <Button variant="outline" size="sm">Google Meet 화상 회의 추가</Button>
+                </div>
+                <div className="flex items-center gap-4">
+                  <MapPin className="h-5 w-5 text-muted-foreground" />
+                   <Input placeholder="위치 추가" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"/>
+                </div>
+                <div className="flex items-center gap-4">
+                  <AlignLeft className="h-5 w-5 text-muted-foreground" />
+                  <Input placeholder="설명 또는 파일 추가" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"/>
+                </div>
+                <div className="flex items-center gap-4">
+                  <CalendarIcon className="h-5 w-5 text-muted-foreground" />
+                  <p className="text-sm">이원석</p>
+                </div>
+              </div>
+            </TabsContent>
+            <TabsContent value="task" className="mt-4 space-y-4">
+                <Input placeholder="할 일 제목 추가" className="text-lg h-12" />
+                <div className="space-y-3">
+                    <div className="flex items-center gap-4">
+                        <AlignLeft className="h-5 w-5 text-muted-foreground" />
+                        <Input placeholder="설명 추가" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"/>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <ListTodo className="h-5 w-5 text-muted-foreground" />
+                         <p className="text-sm">Tasks</p>
+                    </div>
+                </div>
+            </TabsContent>
+            <TabsContent value="appointment" className="mt-4 text-center text-sm text-muted-foreground">
+              <p>약속 일정 기능은 현재 지원되지 않습니다.</p>
+            </TabsContent>
+          </Tabs>
         </CardContent>
-        <CardFooter>
-          <Button onClick={handleSubmit} disabled={isLoading} className="w-full">
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {actionToKorean(action)}
-          </Button>
+        <CardFooter className="flex justify-end gap-2 p-4 pt-0">
+            <Button variant="ghost">옵션 더보기</Button>
+            <Button onClick={handleSave}>저장</Button>
         </CardFooter>
       </Card>
       <CalendarView />
