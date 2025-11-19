@@ -38,22 +38,22 @@ export type SmartScheduleOutput = z.infer<typeof SmartScheduleOutputSchema>;
 
 export async function createSchedule(input: SmartScheduleInput): Promise<SmartScheduleOutput> {
   // return smartScheduleManagementFlow(input);
-  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다." };
+  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다. 잠시 후 다시 시도해주세요." };
 }
 
 export async function getSchedule(input: SmartScheduleInput): Promise<SmartScheduleOutput> {
   // return smartScheduleManagementFlow(input);
-  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다." };
+  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다. 잠시 후 다시 시도해주세요." };
 }
 
 export async function modifySchedule(input: SmartScheduleInput): Promise<SmartScheduleOutput> {
   // return smartScheduleManagementFlow(input);
-  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다." };
+  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다. 잠시 후 다시 시도해주세요." };
 }
 
 export async function deleteSchedule(input: SmartScheduleInput): Promise<SmartScheduleOutput> {
   // return smartScheduleManagementFlow(input);
-  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다." };
+  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다. 잠시 후 다시 시도해주세요." };
 }
 
 /*

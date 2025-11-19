@@ -55,12 +55,16 @@ export function ScheduleManager() {
     };
 
     try {
-      const response = await actionMap[action]({ action, description });
+      // AI is disabled, so we show a message instead of calling the flow.
+      const response = {
+        success: false,
+        message: 'AI 기능이 일시적으로 비활성화되었습니다. 현재 자연어 처리를 통한 일정 관리가 불가능합니다.',
+      }
       setResult(response.message);
       toast({
-        title: response.success ? '성공' : '오류',
+        title: '기능 비활성화됨',
         description: response.message,
-        variant: response.success ? 'default' : 'destructive',
+        variant: 'destructive',
       });
     } catch (error) {
       console.error('일정 관리 오류:', error);
@@ -94,7 +98,7 @@ export function ScheduleManager() {
         <CardHeader>
           <CardTitle>이벤트 관리</CardTitle>
           <CardDescription>
-            자연어를 사용하여 이벤트를 관리하세요.
+            자연어를 사용하여 이벤트를 관리하세요. (현재 AI 기능 비활성화됨)
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
