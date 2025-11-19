@@ -37,8 +37,10 @@ export default function DashboardPage() {
     setActiveView(view);
   };
 
-  const handleModalClose = () => {
-    setActiveView(null);
+  const handleModalClose = (isOpen: boolean) => {
+    if (!isOpen) {
+      setActiveView(null);
+    }
   };
 
   const renderContentForView = (view: View) => {
