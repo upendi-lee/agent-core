@@ -1,10 +1,10 @@
 import {genkit} from 'genkit';
 import {googleAI} from '@genkit-ai/google-genai';
-import {next} from '@genkit-ai/next';
+import {nextjs} from '@genkit-ai/next';
 
 export const ai = genkit({
   plugins: [
-    next(),
+    nextjs(),
     googleAI({apiKey: process.env.GEMINI_API_KEY}),
   ],
   logLevel: 'debug',
