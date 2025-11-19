@@ -50,9 +50,8 @@ const meetingSummaryFlow = ai.defineFlow(
     inputSchema: MeetingSummaryInputSchema,
     outputSchema: MeetingSummaryOutputSchema,
   },
-  async input => {
-    
-    const {text: transcript} = await ai.generate({
+  async (input) => {
+    const { text: transcript } = await ai.generate({
       model: 'gemini-1.5-flash-latest',
       prompt: [
         {
@@ -65,8 +64,8 @@ const meetingSummaryFlow = ai.defineFlow(
         },
       ],
     });
-    
-    const {output} = await meetingSummaryPrompt({
+
+    const { output } = await meetingSummaryPrompt({
       transcript,
     });
     return output!;
