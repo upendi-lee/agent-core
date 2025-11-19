@@ -31,7 +31,7 @@ export async function meetingSummary(input: MeetingSummaryInput): Promise<Meetin
 
 const meetingSummaryPrompt = ai.definePrompt({
   name: 'meetingSummaryPrompt',
-  model: 'gemini-pro',
+  model: 'gemini-1.5-flash-latest',
   input: {schema: z.object({ transcript: z.string() })},
   output: {schema: MeetingSummaryOutputSchema},
   prompt: `You are an AI assistant tasked with summarizing meetings and extracting action items.
@@ -53,7 +53,7 @@ const meetingSummaryFlow = ai.defineFlow(
   async input => {
     
     const {text: transcript} = await ai.generate({
-      model: 'gemini-pro',
+      model: 'gemini-1.5-flash-latest',
       prompt: [
         {
           media: {

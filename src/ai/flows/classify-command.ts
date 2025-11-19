@@ -33,7 +33,7 @@ export async function classifyCommand(
 
 const prompt = ai.definePrompt({
   name: 'classifyCommandPrompt',
-  model: 'gemini-pro',
+  model: 'gemini-1.5-flash-latest',
   input: {schema: ClassifyCommandInputSchema},
   output: {schema: ClassifyCommandOutputSchema},
   prompt: `You are a command classification expert. Your task is to classify the user's command into one of the following categories: SCHEDULE, NOTES, TASKS, MEETINGS, BRIEFING.
