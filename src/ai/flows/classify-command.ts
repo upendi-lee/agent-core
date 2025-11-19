@@ -8,7 +8,7 @@
  * - ClassifyCommandOutput - The return type for the classifyCommand function.
  */
 
-import {ai} from '@/ai/genkit';
+// import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const ClassifyCommandInputSchema = z.object({
@@ -28,9 +28,11 @@ export type ClassifyCommandOutput = z.infer<
 export async function classifyCommand(
   input: ClassifyCommandInput
 ): Promise<ClassifyCommandOutput> {
-  return classifyCommandFlow(input);
+  // return classifyCommandFlow(input);
+  return { category: 'UNKNOWN' };
 }
 
+/*
 const prompt = ai.definePrompt({
   name: 'classifyCommandPrompt',
   model: 'gemini-1.5-flash-latest',
@@ -62,3 +64,4 @@ const classifyCommandFlow = ai.defineFlow(
     return output!;
   }
 );
+*/

@@ -11,7 +11,7 @@
  * - SmartScheduleOutput - The return type for the schedule functions.
  */
 
-import {ai} from '@/ai/genkit';
+// import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const SmartScheduleInputSchema = z.object({
@@ -37,21 +37,26 @@ const SmartScheduleOutputSchema = z.object({
 export type SmartScheduleOutput = z.infer<typeof SmartScheduleOutputSchema>;
 
 export async function createSchedule(input: SmartScheduleInput): Promise<SmartScheduleOutput> {
-  return smartScheduleManagementFlow(input);
+  // return smartScheduleManagementFlow(input);
+  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다." };
 }
 
 export async function getSchedule(input: SmartScheduleInput): Promise<SmartScheduleOutput> {
-  return smartScheduleManagementFlow(input);
+  // return smartScheduleManagementFlow(input);
+  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다." };
 }
 
 export async function modifySchedule(input: SmartScheduleInput): Promise<SmartScheduleOutput> {
-  return smartScheduleManagementFlow(input);
+  // return smartScheduleManagementFlow(input);
+  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다." };
 }
 
 export async function deleteSchedule(input: SmartScheduleInput): Promise<SmartScheduleOutput> {
-  return smartScheduleManagementFlow(input);
+  // return smartScheduleManagementFlow(input);
+  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다." };
 }
 
+/*
 const prompt = ai.definePrompt({
   name: 'smartScheduleManagementPrompt',
   model: 'gemini-1.5-flash-latest',
@@ -86,3 +91,4 @@ const smartScheduleManagementFlow = ai.defineFlow(
     return output!;
   }
 );
+*/

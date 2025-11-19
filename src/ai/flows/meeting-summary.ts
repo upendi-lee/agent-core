@@ -7,7 +7,7 @@
  * - MeetingSummaryOutput - The return type for the meetingSummary function.
  */
 
-import {ai} from '@/ai/genkit';
+// import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const MeetingSummaryInputSchema = z.object({
@@ -26,9 +26,11 @@ const MeetingSummaryOutputSchema = z.object({
 export type MeetingSummaryOutput = z.infer<typeof MeetingSummaryOutputSchema>;
 
 export async function meetingSummary(input: MeetingSummaryInput): Promise<MeetingSummaryOutput> {
-  return meetingSummaryFlow(input);
+  // return meetingSummaryFlow(input);
+  return { summary: "AI 기능이 일시적으로 비활성화되었습니다.", actionItems: [] };
 }
 
+/*
 const meetingSummaryPrompt = ai.definePrompt({
   name: 'meetingSummaryPrompt',
   model: 'gemini-1.5-flash-latest',
@@ -71,3 +73,4 @@ const meetingSummaryFlow = ai.defineFlow(
     return output!;
   }
 );
+*/

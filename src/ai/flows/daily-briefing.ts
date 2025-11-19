@@ -8,7 +8,7 @@
  * - DailyBriefingOutput - The return type for the generateDailyBriefing function.
  */
 
-import {ai} from '@/ai/genkit';
+// import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const DailyBriefingInputSchema = z.object({
@@ -24,9 +24,11 @@ const DailyBriefingOutputSchema = z.object({
 export type DailyBriefingOutput = z.infer<typeof DailyBriefingOutputSchema>;
 
 export async function generateDailyBriefing(input: DailyBriefingInput): Promise<DailyBriefingOutput> {
-  return dailyBriefingFlow(input);
+  // return dailyBriefingFlow(input);
+  return { briefing: "AI 기능이 일시적으로 비활성화되었습니다. 잠시 후 다시 시도해주세요." };
 }
 
+/*
 const prompt = ai.definePrompt({
   name: 'dailyBriefingPrompt',
   model: 'gemini-1.5-flash-latest',
@@ -55,3 +57,4 @@ const dailyBriefingFlow = ai.defineFlow(
     return output!;
   }
 );
+*/
