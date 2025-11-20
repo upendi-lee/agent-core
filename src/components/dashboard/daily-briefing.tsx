@@ -30,6 +30,13 @@ export function DailyBriefing() {
           '새로운 목업에 대해 디자인 팀에 후속 조치하는 것을 잊지 마세요.',
       });
       setBriefing(result.briefing);
+       if (result.briefing.includes('비활성화')) {
+         toast({
+            variant: 'destructive',
+            title: '기능 비활성화됨',
+            description: 'AI 기능이 현재 비활성화되어 브리핑을 생성할 수 없습니다.',
+         });
+      }
     } catch (error) {
       console.error('데일리 브리핑 생성 오류:', error);
       toast({
@@ -43,11 +50,10 @@ export function DailyBriefing() {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>데일리 브리핑</CardTitle>
-        <CardDescription>오늘의 요약입니다.</CardDescription>
-      </CardHeader>
+    <div>
+      <p className="px-6 pb-4 text-sm text-muted-foreground">
+        하루의 일정, 작업, 노트를 요약하여 브리핑을 받아보세요.
+      </p>
       <CardContent>
         {isLoading && (
           <div className="flex min-h-[100px] items-center justify-center">
@@ -61,15 +67,19 @@ export function DailyBriefing() {
         )}
         {!briefing && !isLoading && (
           <div className="flex min-h-[100px] flex-col items-center justify-center gap-4 text-center">
-            <p className="text-sm text-muted-foreground">
-              일정, 작업, 노트를 포함한 하루 요약을 받아보세요.
-            </p>
-            <Button onClick={handleGenerateBriefing} disabled={isLoading}>
+             <Button onClick={handleGenerateBriefing} disabled={isLoading}>
               브리핑 생성
             </Button>
           </div>
         )}
+         {briefing && !isLoading && (
+            <div className="flex justify-center pt-4">
+              <Button onClick={handleGenerateBriefing} disabled={isLoading} variant="outline">
+                다시 생성
+             </Button>
+            </div>
+        )}
       </CardContent>
-    </Card>
+    </div>
   );
 }

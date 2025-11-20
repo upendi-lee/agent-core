@@ -25,8 +25,9 @@ import {
 import { ScheduleManager } from '@/components/schedule-manager';
 import { NoteTaker } from '@/components/note-taker';
 import { MeetingSummarizer } from '@/components/meeting-summarizer';
+import { DailyBriefing } from '@/components/dashboard/daily-briefing';
 
-type DialogType = 'schedule' | 'notes' | 'meetings' | null;
+type DialogType = 'schedule' | 'notes' | 'meetings' | 'briefing' | null;
 type ScheduleTab = 'event' | 'task';
 
 const navItems = [
@@ -37,16 +38,16 @@ const navItems = [
     color: 'bg-orange-100 text-orange-600',
   },
   {
-    id: 'tasks',
-    label: '할일',
-    icon: ClipboardList,
-    color: 'bg-purple-100 text-purple-600',
-  },
-  {
     id: 'notes',
     label: '노트',
     icon: ClipboardList,
     color: 'bg-blue-100 text-blue-600',
+  },
+  {
+    id: 'tasks',
+    label: '할일',
+    icon: ClipboardList,
+    color: 'bg-purple-100 text-purple-600',
   },
   { id: 'meetings', label: '회의', icon: Users, color: 'bg-green-100 text-green-600' },
   { id: 'briefing', label: '브리핑', icon: HeartPulse, color: 'bg-red-100 text-red-600' },
@@ -67,6 +68,8 @@ export default function DashboardPage() {
       setOpenDialog('notes');
     } else if (id === 'meetings') {
       setOpenDialog('meetings');
+    } else if (id === 'briefing') {
+      setOpenDialog('briefing');
     }
   };
 
@@ -99,6 +102,15 @@ export default function DashboardPage() {
             <MeetingSummarizer />
           </DialogContent>
         );
+       case 'briefing':
+        return (
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>데일리 브리핑</DialogTitle>
+            </DialogHeader>
+            <DailyBriefing />
+          </DialogContent>
+        );
       default:
         return null;
     }
@@ -117,8 +129,8 @@ export default function DashboardPage() {
 
         <main className="flex-1 space-y-6 pt-4">
           <div className="flex items-center gap-2 overflow-x-auto pb-4">
-            {navItems.map((item, index) => (
-              <div key={index} className="flex flex-col items-center gap-2">
+            {navItems.map((item) => (
+              <div key={item.id} className="flex flex-col items-center gap-2">
                 <DialogTrigger asChild>
                   <Button
                     variant="ghost"
