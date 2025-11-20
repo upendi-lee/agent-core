@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mic, StopCircle, CheckCircle, ListTodo, FileAudio, Users, Calendar, MapPin } from 'lucide-react';
+import { Loader2, Mic, StopCircle, CheckCircle, ListTodo, FileAudio, UploadCloud, DownloadCloud } from 'lucide-react';
 import { meetingSummary } from '@/ai/flows/meeting-summary';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
@@ -123,6 +123,13 @@ export function MeetingSummarizer() {
     */
   };
 
+  const handleGoogleDriveAction = () => {
+    toast({
+      title: '준비 중인 기능',
+      description: 'Google 드라이브 연동 기능은 현재 준비 중입니다.',
+    });
+  };
+
   return (
     <div className="grid gap-6 md:grid-cols-2">
       <Card>
@@ -206,8 +213,21 @@ export function MeetingSummarizer() {
         </Card>
 
         <Card>
-          <CardHeader>
-            <CardTitle>요약 및 실행 항목</CardTitle>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <div className="space-y-1">
+              <CardTitle>요약 및 실행 항목</CardTitle>
+              <CardDescription>생성된 회의록을 확인하고 저장하세요.</CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={handleGoogleDriveAction}>
+                    <UploadCloud className="mr-2 h-4 w-4" />
+                    저장
+                </Button>
+                 <Button variant="outline" size="sm" onClick={handleGoogleDriveAction}>
+                    <DownloadCloud className="mr-2 h-4 w-4" />
+                    불러오기
+                </Button>
+            </div>
           </CardHeader>
           <CardContent className="min-h-[150px]">
             {isLoading && (
