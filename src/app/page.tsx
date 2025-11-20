@@ -24,8 +24,9 @@ import {
 } from '@/components/ui/dialog';
 import { ScheduleManager } from '@/components/schedule-manager';
 import { NoteTaker } from '@/components/note-taker';
+import { MeetingSummarizer } from '@/components/meeting-summarizer';
 
-type DialogType = 'schedule' | 'notes' | null;
+type DialogType = 'schedule' | 'notes' | 'meetings' | null;
 type ScheduleTab = 'event' | 'task';
 
 const navItems = [
@@ -36,12 +37,17 @@ const navItems = [
     color: 'bg-orange-100 text-orange-600',
   },
   {
+    id: 'tasks',
+    label: '할일',
+    icon: ClipboardList,
+    color: 'bg-purple-100 text-purple-600',
+  },
+  {
     id: 'notes',
     label: '노트',
     icon: ClipboardList,
     color: 'bg-blue-100 text-blue-600',
   },
-  { id: 'tasks', label: '할일', icon: ClipboardList, color: 'bg-purple-100 text-purple-600' },
   { id: 'meetings', label: '회의', icon: Users, color: 'bg-green-100 text-green-600' },
   { id: 'briefing', label: '브리핑', icon: HeartPulse, color: 'bg-red-100 text-red-600' },
 ];
@@ -59,6 +65,8 @@ export default function DashboardPage() {
       setOpenDialog('schedule');
     } else if (id === 'notes') {
       setOpenDialog('notes');
+    } else if (id === 'meetings') {
+      setOpenDialog('meetings');
     }
   };
 
@@ -66,7 +74,7 @@ export default function DashboardPage() {
     switch (openDialog) {
       case 'schedule':
         return (
-          <DialogContent className="max-w-xl">
+          <DialogContent className="max-w-4xl">
             <DialogHeader>
               <DialogTitle>일정 관리</DialogTitle>
             </DialogHeader>
@@ -80,6 +88,15 @@ export default function DashboardPage() {
               <DialogTitle>지능형 노트 필기</DialogTitle>
             </DialogHeader>
             <NoteTaker />
+          </DialogContent>
+        );
+      case 'meetings':
+        return (
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>AI 기반 회의 요약</DialogTitle>
+            </DialogHeader>
+            <MeetingSummarizer />
           </DialogContent>
         );
       default:
