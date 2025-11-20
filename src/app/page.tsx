@@ -26,6 +26,7 @@ import { ScheduleManager } from '@/components/schedule-manager';
 import { NoteTaker } from '@/components/note-taker';
 
 type DialogType = 'schedule' | 'notes' | null;
+type ScheduleTab = 'event' | 'task';
 
 const navItems = [
   {
@@ -34,19 +35,32 @@ const navItems = [
     icon: Calendar,
     color: 'bg-orange-100 text-orange-600',
   },
-  { id: 'tasks', label: '할일', icon: ClipboardList, color: 'bg-purple-100 text-purple-600' },
-  { id: 'meetings', label: '회의', icon: Users, color: 'bg-green-100 text-green-600' },
   {
     id: 'notes',
     label: '노트',
     icon: ClipboardList,
     color: 'bg-blue-100 text-blue-600',
   },
+  { id: 'tasks', label: '할일', icon: ClipboardList, color: 'bg-purple-100 text-purple-600' },
+  { id: 'meetings', label: '회의', icon: Users, color: 'bg-green-100 text-green-600' },
   { id: 'briefing', label: '브리핑', icon: HeartPulse, color: 'bg-red-100 text-red-600' },
 ];
 
 export default function DashboardPage() {
   const [openDialog, setOpenDialog] = useState<DialogType>(null);
+  const [initialTab, setInitialTab] = useState<ScheduleTab>('event');
+
+  const handleNavClick = (id: string) => {
+    if (id === 'schedule') {
+      setInitialTab('event');
+      setOpenDialog('schedule');
+    } else if (id === 'tasks') {
+      setInitialTab('task');
+      setOpenDialog('schedule');
+    } else if (id === 'notes') {
+      setOpenDialog('notes');
+    }
+  };
 
   const renderDialogContent = () => {
     switch (openDialog) {
@@ -56,7 +70,7 @@ export default function DashboardPage() {
             <DialogHeader>
               <DialogTitle>일정 관리</DialogTitle>
             </DialogHeader>
-            <ScheduleManager />
+            <ScheduleManager defaultTab={initialTab} />
           </DialogContent>
         );
       case 'notes':
@@ -92,11 +106,7 @@ export default function DashboardPage() {
                   <Button
                     variant="ghost"
                     className={`flex h-16 w-16 flex-col items-center justify-center rounded-2xl ${item.color}`}
-                    onClick={() => {
-                      if (item.id === 'schedule' || item.id === 'notes') {
-                        setOpenDialog(item.id);
-                      }
-                    }}
+                    onClick={() => handleNavClick(item.id)}
                   >
                     <item.icon className="h-7 w-7" />
                   </Button>

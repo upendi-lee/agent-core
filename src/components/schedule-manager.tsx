@@ -23,7 +23,11 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { CalendarView } from './dashboard/calendar-view';
 
-export function ScheduleManager() {
+interface ScheduleManagerProps {
+  defaultTab?: 'event' | 'task';
+}
+
+export function ScheduleManager({ defaultTab = 'event' }: ScheduleManagerProps) {
   const { toast } = useToast();
 
   const handleSave = () => {
@@ -44,7 +48,7 @@ export function ScheduleManager() {
           </CardDescription>
         </CardHeader>
         <CardContent className="p-4 pt-0">
-          <Tabs defaultValue="event">
+          <Tabs defaultValue={defaultTab}>
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="event">일정</TabsTrigger>
               <TabsTrigger value="task">할 일</TabsTrigger>
@@ -85,6 +89,10 @@ export function ScheduleManager() {
                     <div className="flex items-center gap-4">
                         <AlignLeft className="h-5 w-5 text-muted-foreground" />
                         <Input placeholder="설명 추가" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"/>
+                    </div>
+                     <div className="flex items-center gap-4">
+                        <Clock className="h-5 w-5 text-muted-foreground" />
+                        <Input type="date" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"/>
                     </div>
                     <div className="flex items-center gap-4">
                         <ListTodo className="h-5 w-5 text-muted-foreground" />
