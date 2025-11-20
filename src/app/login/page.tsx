@@ -39,8 +39,10 @@ export default function LoginPage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="flex flex-col items-center text-center">
-          <Link href="/">
-            <AgentCoreLogo className="h-12 w-12" />
+          <Link href="/" legacyBehavior>
+            <a aria-label="Back to dashboard">
+              <AgentCoreLogo className="h-12 w-12" />
+            </a>
           </Link>
           <h1 className="mt-4 text-2xl font-bold">에이전트 코어 로그인</h1>
           <p className="mt-2 text-muted-foreground">
