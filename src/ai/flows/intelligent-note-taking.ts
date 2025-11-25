@@ -8,8 +8,8 @@
  * - IntelligentNoteTakingOutput - Output type containing the processed note and suggested tags.
  */
 
-// import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 const IntelligentNoteTakingInputSchema = z.object({
   noteContent: z
@@ -25,16 +25,14 @@ const IntelligentNoteTakingOutputSchema = z.object({
 export type IntelligentNoteTakingOutput = z.infer<typeof IntelligentNoteTakingOutputSchema>;
 
 export async function intelligentNoteTaking(input: IntelligentNoteTakingInput): Promise<IntelligentNoteTakingOutput> {
-  // return intelligentNoteTakingFlow(input);
-  return { processedNote: input.noteContent, suggestedTags: [] };
+  return intelligentNoteTakingFlow(input);
 }
 
-/*
 const prompt = ai.definePrompt({
   name: 'intelligentNoteTakingPrompt',
   model: 'gemini-1.5-flash-latest',
-  input: {schema: IntelligentNoteTakingInputSchema},
-  output: {schema: IntelligentNoteTakingOutputSchema},
+  input: { schema: IntelligentNoteTakingInputSchema },
+  output: { schema: IntelligentNoteTakingOutputSchema },
   prompt: `You are an intelligent note-taking assistant. You will receive note content and suggest relevant tags based on keyword extraction from the note.
 
 Note Content: {{{noteContent}}}
@@ -53,8 +51,7 @@ const intelligentNoteTakingFlow = ai.defineFlow(
     outputSchema: IntelligentNoteTakingOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { output } = await prompt(input);
     return output!;
   }
 );
-*/

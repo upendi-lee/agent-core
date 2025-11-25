@@ -11,8 +11,9 @@
  * - SmartScheduleOutput - The return type for the schedule functions.
  */
 
-// import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
+import { createCalendarEvent } from '@/lib/google';
 
 const SmartScheduleInputSchema = z.object({
   action: z
@@ -33,50 +34,54 @@ const SmartScheduleOutputSchema = z.object({
   success: z.boolean().describe('Whether the schedule action was successful.'),
   message: z.string().describe('A message indicating the result of the action.'),
   scheduleDetails: z.any().optional().describe('Details of the schedule, if available.'),
+  eventLink: z.string().optional().describe('Link to the created Google Calendar event.'),
 });
 export type SmartScheduleOutput = z.infer<typeof SmartScheduleOutputSchema>;
 
 export async function createSchedule(input: SmartScheduleInput): Promise<SmartScheduleOutput> {
-  // return smartScheduleManagementFlow(input);
-  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다. 잠시 후 다시 시도해주세요." };
+  return smartScheduleManagementFlow(input);
 }
 
 export async function getSchedule(input: SmartScheduleInput): Promise<SmartScheduleOutput> {
-  // return smartScheduleManagementFlow(input);
-  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다. 잠시 후 다시 시도해주세요." };
+  return smartScheduleManagementFlow(input);
 }
 
 export async function modifySchedule(input: SmartScheduleInput): Promise<SmartScheduleOutput> {
-  // return smartScheduleManagementFlow(input);
-  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다. 잠시 후 다시 시도해주세요." };
+  return smartScheduleManagementFlow(input);
 }
 
 export async function deleteSchedule(input: SmartScheduleInput): Promise<SmartScheduleOutput> {
-  // return smartScheduleManagementFlow(input);
-  return { success: false, message: "AI 기능이 일시적으로 비활성화되었습니다. 잠시 후 다시 시도해주세요." };
+  return smartScheduleManagementFlow(input);
 }
 
-/*
+
 const prompt = ai.definePrompt({
   name: 'smartScheduleManagementPrompt',
-  model: 'gemini-1.5-flash-latest',
-  input: {schema: SmartScheduleInputSchema},
-  output: {schema: SmartScheduleOutputSchema},
+  model: 'gemini-1.5-pro',
+  input: { schema: SmartScheduleInputSchema },
+  output: { schema: SmartScheduleOutputSchema },
   prompt: `You are a smart schedule management assistant.
 
   The user will provide a natural language description of an action to perform on a schedule, along with any constraints or preferences.
   Your goal is to understand the user's intent and perform the requested action, providing a confirmation message and relevant schedule details.
 
   Here's the action the user wants to perform:
-  Action: {{{action}}}
+  Action: {{action}}
 
   Here's the description of the schedule, including constraints and preferences:
-  Description: {{{description}}}
+  Description: {{description}}
 
   Respond in a JSON format with a "success" boolean, a "message" string, and optional "scheduleDetails" (in JSON format) field.
   If the action is successful, set "success" to true and provide a confirmation message.
   If the action fails, set "success" to false and provide an error message.
-  The calendar ID is {{{calendarId}}}.
+  The calendar ID is {{calendarId}}.
+  
+  If the action is "create", please also extract the following details for the event if available:
+  - summary (string)
+  - startTime (ISO string)
+  - endTime (ISO string)
+  - description (string)
+  Put these in the "scheduleDetails" object.
   `,
 });
 
@@ -87,8 +92,27 @@ const smartScheduleManagementFlow = ai.defineFlow(
     outputSchema: SmartScheduleOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { output } = await prompt(input);
+
+    if (output && output.success && input.action === 'create' && output.scheduleDetails) {
+      try {
+        const eventDetails = output.scheduleDetails;
+        if (eventDetails.summary && eventDetails.startTime && eventDetails.endTime) {
+          const eventLink = await createCalendarEvent({
+            summary: eventDetails.summary,
+            description: eventDetails.description || input.description,
+            startTime: eventDetails.startTime,
+            endTime: eventDetails.endTime,
+          });
+          output.eventLink = eventLink;
+          output.message += ` Event created: ${eventLink}`;
+        }
+      } catch (error) {
+        console.error("Failed to create calendar event:", error);
+        output.message += " (Failed to sync with Google Calendar)";
+      }
+    }
+
     return output!;
   }
 );
-*/

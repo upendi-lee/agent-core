@@ -9,7 +9,7 @@ const hasSpeechRecognition = () =>
 export function useSpeech() {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
     if (!hasSpeechRecognition()) {
@@ -18,7 +18,7 @@ export function useSpeech() {
     }
 
     const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     recognitionRef.current = new SpeechRecognition();
     const recognition = recognitionRef.current;
 
@@ -26,7 +26,7 @@ export function useSpeech() {
     recognition.interimResults = true;
     recognition.lang = 'ko-KR';
 
-    recognition.onresult = (event) => {
+    recognition.onresult = (event: any) => {
       let finalTranscript = '';
       let interimTranscript = '';
       for (let i = event.resultIndex; i < event.results.length; ++i) {
@@ -43,7 +43,7 @@ export function useSpeech() {
       setIsListening(false);
     };
 
-    recognition.onerror = (event) => {
+    recognition.onerror = (event: any) => {
       console.error('음성 인식 오류', event.error);
       setIsListening(false);
     };

@@ -8,8 +8,8 @@
  * - SearchAndQAOutput - The return type for the searchAndQA function.
  */
 
-// import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 const SearchAndQAInputSchema = z.object({
   query: z.string().describe('The natural language query to search with.'),
@@ -25,16 +25,14 @@ const SearchAndQAOutputSchema = z.object({
 export type SearchAndQAOutput = z.infer<typeof SearchAndQAOutputSchema>;
 
 export async function searchAndQA(input: SearchAndQAInput): Promise<SearchAndQAOutput> {
-  // return searchAndQAFlow(input);
-  return { answer: "AI 기능이 일시적으로 비활성화되었습니다." };
+  return searchAndQAFlow(input);
 }
 
-/*
 const prompt = ai.definePrompt({
   name: 'searchAndQAPrompt',
   model: 'gemini-1.5-flash-latest',
-  input: {schema: SearchAndQAInputSchema},
-  output: {schema: SearchAndQAOutputSchema},
+  input: { schema: SearchAndQAInputSchema },
+  output: { schema: SearchAndQAOutputSchema },
   prompt: `You are a search and question answering expert.
 
   You will receive a query and a set of schedules, notes, and meeting minutes.
@@ -55,8 +53,7 @@ const searchAndQAFlow = ai.defineFlow(
     outputSchema: SearchAndQAOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { output } = await prompt(input);
     return output!;
   }
 );
-*/

@@ -7,6 +7,9 @@ import {
   Mic,
   Send,
   Users,
+  Mail,
+  Cloud,
+  FolderKanban,
 } from 'lucide-react';
 import { AgentCoreLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
@@ -26,8 +29,10 @@ import { ScheduleManager } from '@/components/schedule-manager';
 import { NoteTaker } from '@/components/note-taker';
 import { MeetingSummarizer } from '@/components/meeting-summarizer';
 import { DailyBriefing } from '@/components/dashboard/daily-briefing';
+import { QuickInput } from '@/components/quick-input';
+import { HealthDialog, MailDialog, WeatherDialog, ProjectDialog } from '@/components/dashboard/placeholder-dialogs';
 
-type DialogType = 'schedule' | 'notes' | 'meetings' | 'briefing' | null;
+type DialogType = 'schedule' | 'notes' | 'meetings' | 'briefing' | 'health' | 'mail' | 'weather' | 'project' | null;
 type ScheduleTab = 'event' | 'task';
 
 const navItems = [
@@ -51,11 +56,16 @@ const navItems = [
   },
   { id: 'meetings', label: '회의', icon: Users, color: 'bg-green-100 text-green-600' },
   { id: 'briefing', label: '브리핑', icon: HeartPulse, color: 'bg-red-100 text-red-600' },
+  { id: 'health', label: '건강', icon: HeartPulse, color: 'bg-pink-100 text-pink-600' },
+  { id: 'mail', label: '메일', icon: Mail, color: 'bg-yellow-100 text-yellow-600' },
+  { id: 'weather', label: '날씨', icon: Cloud, color: 'bg-cyan-100 text-cyan-600' },
+  { id: 'project', label: '프로젝트', icon: FolderKanban, color: 'bg-indigo-100 text-indigo-600' },
 ];
 
 export default function DashboardPage() {
   const [openDialog, setOpenDialog] = useState<DialogType>(null);
   const [initialTab, setInitialTab] = useState<ScheduleTab>('event');
+  const [scheduleData, setScheduleData] = useState<any>(null);
 
   const handleNavClick = (id: string) => {
     if (id === 'schedule') {
@@ -70,6 +80,45 @@ export default function DashboardPage() {
       setOpenDialog('meetings');
     } else if (id === 'briefing') {
       setOpenDialog('briefing');
+    } else if (id === 'health') {
+      setOpenDialog('health');
+    } else if (id === 'mail') {
+      setOpenDialog('mail');
+    } else if (id === 'weather') {
+      setOpenDialog('weather');
+    } else if (id === 'project') {
+      setOpenDialog('project');
+    }
+  };
+
+  const handleQuickInput = (data: {
+    category: 'SCHEDULE' | 'NOTE' | 'TASK';
+    title: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+    description?: string;
+  }) => {
+    if (data.category === 'SCHEDULE') {
+      setScheduleData({
+        title: data.title,
+        description: data.description,
+        date: data.date,
+        startTime: data.startTime,
+        endTime: data.endTime,
+      });
+      setInitialTab('event');
+      setOpenDialog('schedule');
+    } else if (data.category === 'TASK') {
+      setScheduleData({
+        title: data.title,
+        description: data.description,
+        date: data.date,
+      });
+      setInitialTab('task');
+      setOpenDialog('schedule');
+    } else if (data.category === 'NOTE') {
+      setOpenDialog('notes');
     }
   };
 
@@ -81,7 +130,7 @@ export default function DashboardPage() {
             <DialogHeader>
               <DialogTitle>일정 관리</DialogTitle>
             </DialogHeader>
-            <ScheduleManager defaultTab={initialTab} />
+            <ScheduleManager defaultTab={initialTab} initialData={scheduleData} />
           </DialogContent>
         );
       case 'notes':
@@ -102,13 +151,49 @@ export default function DashboardPage() {
             <MeetingSummarizer />
           </DialogContent>
         );
-       case 'briefing':
+      case 'briefing':
         return (
           <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle>데일리 브리핑</DialogTitle>
             </DialogHeader>
             <DailyBriefing />
+          </DialogContent>
+        );
+      case 'health':
+        return (
+          <DialogContent className="max-w-3xl">
+            <DialogHeader>
+              <DialogTitle>건강 관리</DialogTitle>
+            </DialogHeader>
+            <HealthDialog />
+          </DialogContent>
+        );
+      case 'mail':
+        return (
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>메일함</DialogTitle>
+            </DialogHeader>
+            <MailDialog />
+          </DialogContent>
+        );
+      case 'weather':
+        return (
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>날씨 정보</DialogTitle>
+            </DialogHeader>
+            <WeatherDialog />
+          </DialogContent>
+        );
+      case 'project':
+        return (
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>프로젝트 관리</DialogTitle>
+            </DialogHeader>
+            <ProjectDialog />
           </DialogContent>
         );
       default:
@@ -128,7 +213,7 @@ export default function DashboardPage() {
         </header>
 
         <main className="flex-1 space-y-6 pt-4">
-          <div className="flex items-center gap-2 overflow-x-auto pb-4">
+          <div className="grid grid-cols-5 gap-4 pb-4">
             {navItems.map((item) => (
               <div key={item.id} className="flex flex-col items-center gap-2">
                 <DialogTrigger asChild>
@@ -147,22 +232,7 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          <Card className="rounded-2xl">
-            <CardContent className="p-4">
-              <div className="relative">
-                <Input
-                  placeholder="무엇을 도와드릴까요?"
-                  className="h-12 rounded-full bg-muted pr-24 text-base"
-                />
-                <div className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-2">
-                  <Mic className="h-5 w-5 text-muted-foreground" />
-                  <Button size="icon" className="h-9 w-9 rounded-full">
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <QuickInput onExtracted={handleQuickInput} />
 
           <AISuggestionCard />
           <RecentActivityCard />

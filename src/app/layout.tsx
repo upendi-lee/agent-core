@@ -1,8 +1,20 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import { MainLayout } from '@/components/main-layout';
-import { cn } from '@/lib/utils';
+
+// Polyfill localStorage for server-side rendering
+if (typeof window === 'undefined') {
+  if (!global.localStorage || typeof global.localStorage.getItem !== 'function') {
+    (global as any).localStorage = {
+      getItem: () => null,
+      setItem: () => { },
+      removeItem: () => { },
+      clear: () => { },
+      length: 0,
+      key: () => null,
+    };
+  }
+}
 
 export const metadata: Metadata = {
   title: '에이전트 코어',
@@ -28,8 +40,8 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className={cn('font-body antialiased', 'theme-zinc')}>
-        <MainLayout>{children}</MainLayout>
+      <body className="font-sans antialiased">
+        {children}
         <Toaster />
       </body>
     </html>

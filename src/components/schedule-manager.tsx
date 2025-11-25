@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -25,17 +25,78 @@ import { CalendarView } from './dashboard/calendar-view';
 
 interface ScheduleManagerProps {
   defaultTab?: 'event' | 'task';
+  initialData?: {
+    title?: string;
+    description?: string;
+    date?: string;
+    startTime?: string;
+    endTime?: string;
+  };
 }
 
-export function ScheduleManager({ defaultTab = 'event' }: ScheduleManagerProps) {
+export function ScheduleManager({ defaultTab = 'event', initialData }: ScheduleManagerProps) {
   const { toast } = useToast();
+  const [title, setTitle] = useState(initialData?.title || '');
+  const [description, setDescription] = useState(initialData?.description || '');
+  const [date, setDate] = useState(initialData?.date || new Date().toISOString().split('T')[0]);
+  const [startTime, setStartTime] = useState(initialData?.startTime || '09:00');
+  const [endTime, setEndTime] = useState(initialData?.endTime || '10:00');
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSave = () => {
-    toast({
-      variant: 'destructive',
-      title: '기능 비활성화됨',
-      description: '현재 Google 캘린더 연동이 완료되지 않아 저장할 수 없습니다.',
-    });
+  // Update form when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      if (initialData.title) setTitle(initialData.title);
+      if (initialData.description) setDescription(initialData.description);
+      if (initialData.date) setDate(initialData.date);
+      if (initialData.startTime) setStartTime(initialData.startTime);
+      if (initialData.endTime) setEndTime(initialData.endTime);
+    }
+  }, [initialData]);
+
+  const handleSave = async () => {
+    if (!title) {
+      toast({
+        variant: 'destructive',
+        title: '입력 오류',
+        description: '제목을 입력해주세요.',
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('description', description);
+      formData.append('date', date);
+      formData.append('startTime', startTime);
+      formData.append('endTime', endTime);
+
+      const { createCalendarEventAction } = await import('@/app/actions/google');
+      const result = await createCalendarEventAction(formData);
+
+      if (result.success) {
+        toast({
+          title: '일정 저장 성공',
+          description: 'Google 캘린더에 일정이 저장되었습니다.',
+        });
+        // Reset form
+        setTitle('');
+        setDescription('');
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      console.error('Save failed:', error);
+      toast({
+        variant: 'destructive',
+        title: '저장 실패',
+        description: '일정 저장 중 오류가 발생했습니다.',
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -55,15 +116,40 @@ export function ScheduleManager({ defaultTab = 'event' }: ScheduleManagerProps) 
               <TabsTrigger value="appointment">약속 일정</TabsTrigger>
             </TabsList>
             <TabsContent value="event" className="mt-4 space-y-4">
-              <Input placeholder="제목 추가" className="text-lg h-12" />
+              <Input
+                placeholder="제목 추가"
+                className="text-lg h-12"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
               <div className="space-y-3">
                 <div className="flex items-center gap-4">
                   <Clock className="h-5 w-5 text-muted-foreground" />
-                  <div className="text-sm">11월 19일 (수요일) ⋅ 오후 4:00 - 오후 5:00</div>
+                  <div className="flex gap-2 items-center">
+                    <Input
+                      type="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="w-40"
+                    />
+                    <Input
+                      type="time"
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                      className="w-24"
+                    />
+                    <span>-</span>
+                    <Input
+                      type="time"
+                      value={endTime}
+                      onChange={(e) => setEndTime(e.target.value)}
+                      className="w-24"
+                    />
+                  </div>
                 </div>
                 <div className="flex items-center gap-4">
                   <Users className="h-5 w-5 text-muted-foreground" />
-                  <Input placeholder="참석자 추가" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"/>
+                  <Input placeholder="참석자 추가" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
                 </div>
                 <div className="flex items-center gap-4">
                   <Video className="h-5 w-5 text-muted-foreground" />
@@ -71,11 +157,16 @@ export function ScheduleManager({ defaultTab = 'event' }: ScheduleManagerProps) 
                 </div>
                 <div className="flex items-center gap-4">
                   <MapPin className="h-5 w-5 text-muted-foreground" />
-                   <Input placeholder="위치 추가" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"/>
+                  <Input placeholder="위치 추가" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
                 </div>
                 <div className="flex items-center gap-4">
                   <AlignLeft className="h-5 w-5 text-muted-foreground" />
-                  <Input placeholder="설명 또는 파일 추가" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"/>
+                  <Input
+                    placeholder="설명 또는 파일 추가"
+                    className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
                 </div>
                 <div className="flex items-center gap-4">
                   <CalendarIcon className="h-5 w-5 text-muted-foreground" />
@@ -84,21 +175,21 @@ export function ScheduleManager({ defaultTab = 'event' }: ScheduleManagerProps) 
               </div>
             </TabsContent>
             <TabsContent value="task" className="mt-4 space-y-4">
-                <Input placeholder="할 일 제목 추가" className="text-lg h-12" />
-                <div className="space-y-3">
-                    <div className="flex items-center gap-4">
-                        <AlignLeft className="h-5 w-5 text-muted-foreground" />
-                        <Input placeholder="설명 추가" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"/>
-                    </div>
-                     <div className="flex items-center gap-4">
-                        <Clock className="h-5 w-5 text-muted-foreground" />
-                        <Input type="date" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"/>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <ListTodo className="h-5 w-5 text-muted-foreground" />
-                         <p className="text-sm">Tasks</p>
-                    </div>
+              <Input placeholder="할 일 제목 추가" className="text-lg h-12" />
+              <div className="space-y-3">
+                <div className="flex items-center gap-4">
+                  <AlignLeft className="h-5 w-5 text-muted-foreground" />
+                  <Input placeholder="설명 추가" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
                 </div>
+                <div className="flex items-center gap-4">
+                  <Clock className="h-5 w-5 text-muted-foreground" />
+                  <Input type="date" className="border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
+                </div>
+                <div className="flex items-center gap-4">
+                  <ListTodo className="h-5 w-5 text-muted-foreground" />
+                  <p className="text-sm">Tasks</p>
+                </div>
+              </div>
             </TabsContent>
             <TabsContent value="appointment" className="mt-4 text-center text-sm text-muted-foreground">
               <p>약속 일정 기능은 현재 지원되지 않습니다.</p>
@@ -106,8 +197,10 @@ export function ScheduleManager({ defaultTab = 'event' }: ScheduleManagerProps) 
           </Tabs>
         </CardContent>
         <CardFooter className="flex justify-end gap-2 p-4 pt-0">
-            <Button variant="ghost">옵션 더보기</Button>
-            <Button onClick={handleSave}>저장</Button>
+          <Button variant="ghost">옵션 더보기</Button>
+          <Button onClick={handleSave} disabled={isSaving}>
+            {isSaving ? '저장 중...' : '저장'}
+          </Button>
         </CardFooter>
       </Card>
       <CalendarView />

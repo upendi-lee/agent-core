@@ -8,8 +8,8 @@
  * - DailyBriefingOutput - The return type for the generateDailyBriefing function.
  */
 
-// import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import { ai } from '@/ai/genkit';
+import { z } from 'genkit';
 
 const DailyBriefingInputSchema = z.object({
   schedules: z.string().describe("A summary of the user's schedule for the day."),
@@ -24,16 +24,14 @@ const DailyBriefingOutputSchema = z.object({
 export type DailyBriefingOutput = z.infer<typeof DailyBriefingOutputSchema>;
 
 export async function generateDailyBriefing(input: DailyBriefingInput): Promise<DailyBriefingOutput> {
-  // return dailyBriefingFlow(input);
-  return { briefing: "AI 기능이 일시적으로 비활성화되었습니다. 잠시 후 다시 시도해주세요." };
+  return dailyBriefingFlow(input);
 }
 
-/*
 const prompt = ai.definePrompt({
   name: 'dailyBriefingPrompt',
   model: 'gemini-1.5-flash-latest',
-  input: {schema: DailyBriefingInputSchema},
-  output: {schema: DailyBriefingOutputSchema},
+  input: { schema: DailyBriefingInputSchema },
+  output: { schema: DailyBriefingOutputSchema },
   prompt: `You are an AI assistant that provides a concise and helpful daily briefing to users.  The briefing summarizes the user's schedule, to-do list, and important notes for the day.
 
   Schedule: {{{schedules}}}
@@ -53,8 +51,7 @@ const dailyBriefingFlow = ai.defineFlow(
     outputSchema: DailyBriefingOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+    const { output } = await prompt(input);
     return output!;
   }
 );
-*/
