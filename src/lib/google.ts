@@ -307,3 +307,24 @@ export const createCalendarTask = async (taskDetails: {
 
   return res.data.htmlLink || '';
 };
+
+/**
+ * Lists events from Google Calendar
+ * @param {string} startTime ISO string
+ * @param {string} endTime ISO string
+ * @returns {Promise<any[]>} List of events
+ */
+export const listCalendarEvents = async (startTime: string, endTime: string): Promise<any[]> => {
+  const auth = getGoogleAuthClient();
+  const calendar = google.calendar({ version: 'v3', auth });
+
+  const res = await calendar.events.list({
+    calendarId: 'primary',
+    timeMin: startTime,
+    timeMax: endTime,
+    singleEvents: true,
+    orderBy: 'startTime',
+  });
+
+  return res.data.items || [];
+};

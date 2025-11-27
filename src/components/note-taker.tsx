@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Card,
   CardContent,
@@ -15,6 +15,7 @@ import { intelligentNoteTaking } from '@/ai/flows/intelligent-note-taking';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { ScrollArea } from './ui/scroll-area';
+import { saveNoteAction } from '@/app/actions/google';
 
 interface Note {
   id: number;
@@ -38,13 +39,76 @@ const mockNotes: Note[] = [
   },
 ];
 
-export function NoteTaker() {
-  const [noteContent, setNoteContent] = useState('');
+interface NoteTakerProps {
+  initialContent?: string;
+  autoSave?: boolean;
+  onSaved?: () => void;
+}
+
+export function NoteTaker({ initialContent = '', autoSave = false, onSaved }: NoteTakerProps) {
+  const [noteContent, setNoteContent] = useState(initialContent);
   const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [notes, setNotes] = useState<Note[]>(mockNotes);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const { toast } = useToast();
+
+  const saveNote = async (content: string, tags: string[]) => {
+    // Optimistic update
+    const newNote: Note = {
+      id: Date.now(),
+      content: content,
+      tags: tags,
+      date: '방금 전',
+    };
+    setNotes(prev => [newNote, ...prev]);
+
+    // Server save
+    try {
+      const result = await saveNoteAction(content, tags);
+
+      if (result.success) {
+        toast({ title: '노트 저장됨', description: 'Google Drive에 노트가 저장되었습니다.' });
+        if (onSaved) onSaved();
+      } else {
+        throw new Error(result.message);
+      }
+    } catch (error) {
+      console.error('Failed to save note to server:', error);
+      toast({
+        variant: 'destructive',
+        title: '저장 실패',
+        description: '서버 저장에 실패했습니다. (로컬에는 저장됨)'
+      });
+    }
+  };
+
+  const hasAutoSavedRef = useRef(false);
+
+  // Auto-save if initial content is provided and autoSave is true
+  useEffect(() => {
+    if (initialContent && autoSave && !hasAutoSavedRef.current) {
+      hasAutoSavedRef.current = true;
+      // Trigger tag generation in background but save immediately
+      if (initialContent.length > 20) {
+        setIsLoading(true);
+        intelligentNoteTaking({ noteContent: initialContent })
+          .then(result => {
+            setSuggestedTags(result.suggestedTags);
+            // Update the note with tags after generation (optional, or just save initially without tags)
+            // For now, we save immediately without tags to ensure responsiveness
+            saveNote(initialContent, []);
+          })
+          .catch(err => {
+            console.error(err);
+            saveNote(initialContent, []); // Save even if tag gen fails
+          })
+          .finally(() => setIsLoading(false));
+      } else {
+        saveNote(initialContent, []);
+      }
+    }
+  }, [initialContent, autoSave]);
 
   const handleContentChange = async (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -73,7 +137,7 @@ export function NoteTaker() {
       });
       return;
     }
-    
+
     if (editingNote) {
       // Edit existing note
       const updatedNotes = notes.map(note =>
@@ -83,16 +147,9 @@ export function NoteTaker() {
       toast({ title: '노트 수정됨', description: '노트가 성공적으로 수정되었습니다.' });
     } else {
       // Add new note
-      const newNote: Note = {
-        id: Date.now(),
-        content: noteContent,
-        tags: suggestedTags,
-        date: '방금 전',
-      };
-      setNotes([newNote, ...notes]);
-      toast({ title: '노트 저장됨', description: '새 노트가 저장되었습니다.' });
+      saveNote(noteContent, suggestedTags);
     }
-    
+
     // Reset form
     setNoteContent('');
     setSuggestedTags([]);
@@ -109,7 +166,7 @@ export function NoteTaker() {
     setNotes(notes.filter(note => note.id !== id));
     toast({ title: '노트 삭제됨', description: '노트가 삭제되었습니다.' });
   };
-  
+
   const handleCancelEdit = () => {
     setEditingNote(null);
     setNoteContent('');
@@ -186,7 +243,7 @@ export function NoteTaker() {
                       {note.date}
                     </span>
                   </div>
-                   <div className="absolute top-2 right-2 flex opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute top-2 right-2 flex opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleEditNote(note)}>
                       <p className="text-xs">수정</p>
                     </Button>

@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { CalendarView } from './dashboard/calendar-view';
+import { createCalendarEventAction, createCalendarTaskAction } from '@/app/actions/google';
 
 interface ScheduleManagerProps {
   defaultTab?: 'event' | 'task';
@@ -32,30 +33,45 @@ interface ScheduleManagerProps {
     startTime?: string;
     endTime?: string;
   };
+  autoSave?: boolean;
+  onSaved?: () => void;
 }
 
-export function ScheduleManager({ defaultTab = 'event', initialData }: ScheduleManagerProps) {
+export function ScheduleManager({ defaultTab = 'event', initialData, autoSave = false, onSaved }: ScheduleManagerProps) {
   const { toast } = useToast();
-  const [title, setTitle] = useState(initialData?.title || '');
-  const [description, setDescription] = useState(initialData?.description || '');
-  const [date, setDate] = useState(initialData?.date || new Date().toISOString().split('T')[0]);
-  const [startTime, setStartTime] = useState(initialData?.startTime || '09:00');
-  const [endTime, setEndTime] = useState(initialData?.endTime || '10:00');
+  // Initialize with empty strings to avoid hydration mismatch
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [date, setDate] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [hasAutoSaved, setHasAutoSaved] = useState(false);
 
-  // Update form when initialData changes
+  // Set initial data or defaults on mount
   useEffect(() => {
     if (initialData) {
-      if (initialData.title) setTitle(initialData.title);
-      if (initialData.description) setDescription(initialData.description);
-      if (initialData.date) setDate(initialData.date);
-      if (initialData.startTime) setStartTime(initialData.startTime);
-      if (initialData.endTime) setEndTime(initialData.endTime);
+      setTitle(initialData.title || '');
+      setDescription(initialData.description || '');
+      setDate(initialData.date || new Date().toISOString().split('T')[0]);
+      setStartTime(initialData.startTime || '09:00');
+      setEndTime(initialData.endTime || '10:00');
+    } else {
+      // Set defaults if no initial data
+      setDate(new Date().toISOString().split('T')[0]);
+      setStartTime('09:00');
+      setEndTime('10:00');
     }
   }, [initialData]);
 
-  const handleSave = async () => {
-    if (!title) {
+  const saveEvent = async (data: {
+    title: string;
+    description: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+  }) => {
+    if (!data.title) {
       toast({
         variant: 'destructive',
         title: '입력 오류',
@@ -67,23 +83,30 @@ export function ScheduleManager({ defaultTab = 'event', initialData }: ScheduleM
     setIsSaving(true);
     try {
       const formData = new FormData();
-      formData.append('title', title);
-      formData.append('description', description);
-      formData.append('date', date);
-      formData.append('startTime', startTime);
-      formData.append('endTime', endTime);
+      formData.append('title', data.title);
+      formData.append('description', data.description);
+      formData.append('date', data.date);
+      formData.append('startTime', data.startTime);
+      formData.append('endTime', data.endTime);
 
-      const { createCalendarEventAction } = await import('@/app/actions/google');
-      const result = await createCalendarEventAction(formData);
+      let result;
+      if (defaultTab === 'task') {
+        result = await createCalendarTaskAction(formData);
+      } else {
+        result = await createCalendarEventAction(formData);
+      }
 
       if (result.success) {
         toast({
-          title: '일정 저장 성공',
-          description: 'Google 캘린더에 일정이 저장되었습니다.',
+          title: defaultTab === 'task' ? '할 일 저장 성공' : '일정 저장 성공',
+          description: defaultTab === 'task' ? 'Google 캘린더에 할 일이 저장되었습니다.' : 'Google 캘린더에 일정이 저장되었습니다.',
         });
-        // Reset form
-        setTitle('');
-        setDescription('');
+        // Reset form only if manual save (optional, but good UX)
+        if (!autoSave) {
+          setTitle('');
+          setDescription('');
+        }
+        if (onSaved) onSaved();
       } else {
         throw new Error(result.message);
       }
@@ -92,11 +115,35 @@ export function ScheduleManager({ defaultTab = 'event', initialData }: ScheduleM
       toast({
         variant: 'destructive',
         title: '저장 실패',
-        description: '일정 저장 중 오류가 발생했습니다.',
+        description: error instanceof Error ? error.message : '저장 중 오류가 발생했습니다.',
       });
     } finally {
       setIsSaving(false);
     }
+  };
+
+  // Auto-save effect
+  useEffect(() => {
+    if (autoSave && initialData && !hasAutoSaved && initialData.title) {
+      setHasAutoSaved(true);
+      saveEvent({
+        title: initialData.title,
+        description: initialData.description || '',
+        date: initialData.date || new Date().toISOString().split('T')[0],
+        startTime: initialData.startTime || '09:00',
+        endTime: initialData.endTime || '10:00',
+      });
+    }
+  }, [autoSave, initialData, hasAutoSaved]);
+
+  const handleSave = () => {
+    saveEvent({
+      title,
+      description,
+      date,
+      startTime,
+      endTime,
+    });
   };
 
   return (

@@ -135,16 +135,14 @@ export function MeetingSummarizer() {
 
     setIsLoading(true);
     try {
-      const { saveToDriveAction } = await import('@/app/actions/google');
-      const content = `회의 요약:\n${result.summary}\n\n실행 항목:\n${result.actionItems.join('\n- ')}`;
-      const filename = `Meeting_${new Date().toISOString().replace(/[:.]/g, '-')}.txt`;
+      const { saveMeetingAction } = await import('@/app/actions/google');
 
-      const saveResult = await saveToDriveAction(content, filename);
+      const saveResult = await saveMeetingAction(result.summary, result.actionItems);
 
       if (saveResult.success) {
         toast({
           title: '저장 성공',
-          description: '회의 요약이 Google Drive에 저장되었습니다.',
+          description: '회의 요약이 Google Drive 및 서버에 저장되었습니다.',
         });
       } else {
         throw new Error(saveResult.message);

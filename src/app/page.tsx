@@ -31,8 +31,9 @@ import { MeetingSummarizer } from '@/components/meeting-summarizer';
 import { DailyBriefing } from '@/components/dashboard/daily-briefing';
 import { QuickInput } from '@/components/quick-input';
 import { HealthDialog, MailDialog, WeatherDialog, ProjectDialog } from '@/components/dashboard/placeholder-dialogs';
+import { ScheduleListDialog } from '@/components/schedule-list-dialog';
 
-type DialogType = 'schedule' | 'notes' | 'meetings' | 'briefing' | 'health' | 'mail' | 'weather' | 'project' | null;
+type DialogType = 'schedule' | 'notes' | 'meetings' | 'briefing' | 'health' | 'mail' | 'weather' | 'project' | 'schedule_list' | null;
 type ScheduleTab = 'event' | 'task';
 
 const navItems = [
@@ -66,8 +67,16 @@ export default function DashboardPage() {
   const [openDialog, setOpenDialog] = useState<DialogType>(null);
   const [initialTab, setInitialTab] = useState<ScheduleTab>('event');
   const [scheduleData, setScheduleData] = useState<any>(null);
+  const [noteData, setNoteData] = useState<string>('');
+  const [autoSave, setAutoSave] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const handleRefresh = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
 
   const handleNavClick = (id: string) => {
+    setAutoSave(false);
     if (id === 'schedule') {
       setInitialTab('event');
       setOpenDialog('schedule');
@@ -75,6 +84,7 @@ export default function DashboardPage() {
       setInitialTab('task');
       setOpenDialog('schedule');
     } else if (id === 'notes') {
+      setNoteData(''); // Reset note data on manual open
       setOpenDialog('notes');
     } else if (id === 'meetings') {
       setOpenDialog('meetings');
@@ -92,14 +102,22 @@ export default function DashboardPage() {
   };
 
   const handleQuickInput = (data: {
-    category: 'SCHEDULE' | 'NOTE' | 'TASK';
+    category: 'SCHEDULE' | 'NOTE' | 'TASK' | 'SCHEDULE_QUERY' | 'BRIEFING';
     title: string;
     date?: string;
     startTime?: string;
     endTime?: string;
     description?: string;
   }) => {
-    if (data.category === 'SCHEDULE') {
+    setAutoSave(true);
+
+    // Heuristic fallback: If title contains "알려줘" or "보여줘" and category is SCHEDULE, treat as QUERY
+    let finalCategory = data.category;
+    if (finalCategory === 'SCHEDULE' && (data.title.includes('알려줘') || data.title.includes('보여줘'))) {
+      finalCategory = 'SCHEDULE_QUERY';
+    }
+
+    if (finalCategory === 'SCHEDULE') {
       setScheduleData({
         title: data.title,
         description: data.description,
@@ -109,7 +127,7 @@ export default function DashboardPage() {
       });
       setInitialTab('event');
       setOpenDialog('schedule');
-    } else if (data.category === 'TASK') {
+    } else if (finalCategory === 'TASK') {
       setScheduleData({
         title: data.title,
         description: data.description,
@@ -117,8 +135,13 @@ export default function DashboardPage() {
       });
       setInitialTab('task');
       setOpenDialog('schedule');
-    } else if (data.category === 'NOTE') {
+    } else if (finalCategory === 'NOTE') {
+      setNoteData(data.title); // Use title as content for notes
       setOpenDialog('notes');
+    } else if (finalCategory === 'SCHEDULE_QUERY') {
+      setOpenDialog('schedule_list');
+    } else if (finalCategory === 'BRIEFING') {
+      setOpenDialog('briefing');
     }
   };
 
@@ -130,7 +153,7 @@ export default function DashboardPage() {
             <DialogHeader>
               <DialogTitle>일정 관리</DialogTitle>
             </DialogHeader>
-            <ScheduleManager defaultTab={initialTab} initialData={scheduleData} />
+            <ScheduleManager defaultTab={initialTab} initialData={scheduleData} autoSave={autoSave} onSaved={handleRefresh} />
           </DialogContent>
         );
       case 'notes':
@@ -139,7 +162,7 @@ export default function DashboardPage() {
             <DialogHeader>
               <DialogTitle>지능형 노트 필기</DialogTitle>
             </DialogHeader>
-            <NoteTaker />
+            <NoteTaker initialContent={noteData} autoSave={autoSave} onSaved={handleRefresh} />
           </DialogContent>
         );
       case 'meetings':
@@ -196,6 +219,8 @@ export default function DashboardPage() {
             <ProjectDialog />
           </DialogContent>
         );
+      case 'schedule_list':
+        return <ScheduleListDialog />;
       default:
         return null;
     }
@@ -235,7 +260,7 @@ export default function DashboardPage() {
           <QuickInput onExtracted={handleQuickInput} />
 
           <AISuggestionCard />
-          <RecentActivityCard />
+          <RecentActivityCard refreshTrigger={refreshTrigger} />
         </main>
       </div>
       {renderDialogContent()}
